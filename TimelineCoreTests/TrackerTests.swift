@@ -13,6 +13,7 @@ class TrackerTests: XCTestCase {
     
     func testFlow() {
         let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alignInterval: 10)
+        tracker.currentTimelineId = "ABC"
         tracker.active = true
         timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 9)
         apps.currentApp = SnapshotMock(appId: "com.demo.IDE", appName: "IDE", windowTitle: "Timeline")
@@ -36,10 +37,10 @@ class TrackerTests: XCTestCase {
         timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 20)
         delay(10)
         
-        XCTAssertEqual(storage.timelines.count, 1)
+        XCTAssertEqual(storage.timelines.map { $0.id }, ["ABC"])
         XCTAssertEqual(Set(storage.apps.map { $0.id }), Set(["com.demo.Folders", "com.demo.IDE"]))
         XCTAssertEqual(Set(storage.logs.map { $0.appId }), Set(["com.demo.Folders", "com.demo.IDE", "com.demo.IDE"]))
-        XCTAssertEqual(Set(storage.logs.map { $0.duration }), Set([9, 1, 2]))
+        XCTAssertEqual(Set(storage.logs.map { $0.duration }), Set([9, 1, 2]), "storage is \(storage.logs.map {$0.duration} )")
         
     }
     

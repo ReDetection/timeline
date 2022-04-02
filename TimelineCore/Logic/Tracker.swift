@@ -17,14 +17,14 @@ public protocol AppSnapshot {
 }
 
 public class Tracker {
-    private let counter: Counter
+    private let counter: Counter<AppKey>
     private let storage: Storage
     private let time: TimeDependency
     private let snapshotter: Snapshotter
     private let timer: AlignedTimer
     private let alignInterval: TimeInterval
-    var currentTimelineId: String = UUID().uuidString
-    var fillTimelineDeviceInfo: (inout TimelineStruct)->() = { _ in }
+    public var currentTimelineId: String = UUID().uuidString
+    public var fillTimelineDeviceInfo: (inout TimelineStruct)->() = { _ in }
     
     public init(timeDependency: TimeDependency, storage: Storage, snapshotter: Snapshotter, alignInterval: TimeInterval = 5*60) {
         self.storage = storage
@@ -38,7 +38,11 @@ public class Tracker {
             return timeDependency.currentTime
         })
         self.timer.fire = { [weak self] in
-            self?.persist()
+            guard let `self` = self else { return }
+            self.persist()
+            if self.active == false {
+                self.timer.active = false
+            }
         }
         self.snapshotter.notifyChange = { [weak self] in
             self?.tickAppCounter()
@@ -51,7 +55,9 @@ public class Tracker {
     public var active = false {
         didSet {
             tickAppCounter()
-            timer.active = active
+            if active || counter.statistics.isEmpty {
+                timer.active = active
+            }
         }
     }
     
@@ -64,8 +70,8 @@ public class Tracker {
         let app = storage.fetchApps()[snapshot.appId] ?? self.store(app: snapshot)
         switch app.trackingMode {
         case .skip: counter.pause()
-        case .app: counter.start(name: snapshot.appName) //todo: generic counter with both app id and name of activity
-        case .titles: counter.start(name: snapshot.appName + ": " + snapshot.windowTitle)
+        case .app: counter.start(key: AppKey(appId: snapshot.appId, activity: snapshot.appName))
+        case .titles: counter.start(key: AppKey(appId: snapshot.appId, activity: snapshot.windowTitle))
         }
     }
     
@@ -81,22 +87,30 @@ public class Tracker {
         let timestotStart = previousTimeslotAnyMoment.addingTimeInterval(-passed)
         var log = LogStruct(timelineId: currentTimelineId, timeslotStart: timestotStart, appId: "to be replaced", trackedIdentifier: "to be replaced", duration: 0)
         if storage.fetchTimeline(id: currentTimelineId) == nil {
-            var timeline = TimelineStruct(dateStart: time.currentTime)
+            var timeline = TimelineStruct(id: currentTimelineId, dateStart: time.currentTime)
             fillTimelineDeviceInfo(&timeline)
             storage.store(timeline: timeline)
         }
-        for (name, duration) in counter.statistics {
-            log.appId = name
-            log.trackedIdentifier = name
+        for (appKey, duration) in counter.statistics {
+            log.appId = appKey.appId
+            log.trackedIdentifier = appKey.activity
             log.duration = duration
             storage.store(log: log)
         }
         counter.clearAndPause()
-        tickAppCounter()
+        if active {
+            tickAppCounter()
+        }
     }
     
     private func refreshTimeline() {
         fatalError() //TODO: IMPLEMENT
     }
     
+}
+
+
+private struct AppKey: Hashable {
+    var appId: String
+    var activity: String
 }

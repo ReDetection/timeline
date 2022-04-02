@@ -1,17 +1,17 @@
 import Foundation
 
-public class Counter {
-    public var statistics: [String: TimeInterval] {
-        if active {
-            start(name: lastName)
+public class Counter<Key: Hashable> {
+    public var statistics: [Key: TimeInterval] {
+        if active, let lastKey = lastKey {
+            start(key: lastKey)
         }
         return stats
     }
     private(set) var active = false
     private let queue = DispatchQueue(label: "Counter")
-    private var stats: [String: TimeInterval] = [:]
+    private var stats: [Key: TimeInterval] = [:]
     private var lastStateChange: Date
-    private var lastName = ""
+    private var lastKey: Key?
     let time: () -> Date
     
     public init(timeDependency: @escaping () -> Date = { return Date() }) {
@@ -19,27 +19,27 @@ public class Counter {
         lastStateChange = time()
     }
     
-    public func start(name newValue: String) {
+    public func start(key newValue: Key) {
         queue.sync {
-            self.startUnsafe(name: newValue)
+            self.startUnsafe(key: newValue)
         }
     }
     
-    private func startUnsafe(name newValue: String) {
-        if active {
+    private func startUnsafe(key newValue: Key) {
+        if active, let lastKey = lastKey {
             let timeInPreviousState = time().timeIntervalSince(lastStateChange)
-            let previouslySavedInterval = stats[lastName] ?? 0
-            stats[lastName] = previouslySavedInterval + timeInPreviousState
+            let previouslySavedInterval = stats[lastKey] ?? 0
+            stats[lastKey] = previouslySavedInterval + timeInPreviousState
         }
         lastStateChange = time()
-        lastName = newValue
+        lastKey = newValue
         active = true
     }
     
     public func pause() {
         queue.sync {
-            if active {
-                startUnsafe(name: lastName)
+            if active, let lastKey = lastKey {
+                startUnsafe(key: lastKey)
             }
             active = false
         }
@@ -48,7 +48,7 @@ public class Counter {
     public func clearAndPause() {
         queue.sync {
             self.stats = [:]
-            self.lastName = ""
+            self.lastKey = nil
             self.active = false
         }
     }
