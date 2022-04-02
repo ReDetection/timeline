@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		3629E83E27EF5093001A6823 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3629E83D27EF5093001A6823 /* Model.swift */; };
+		3659511B27F7E61700A608BA /* PureAlignedTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511A27F7E61700A608BA /* PureAlignedTimer.swift */; };
+		3659511D27F80A5600A608BA /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511C27F80A5600A608BA /* TrackerTests.swift */; };
 		365D0E6927EF8FA700774736 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D0E6827EF8FA700774736 /* Tracker.swift */; };
 		365D0E6B27F0519E00774736 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D0E6A27F0519E00774736 /* Storage.swift */; };
 		3671375527DC872000BDE117 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3671375427DC872000BDE117 /* Tests_macOS.swift */; };
@@ -70,6 +72,8 @@
 
 /* Begin PBXFileReference section */
 		3629E83D27EF5093001A6823 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		3659511A27F7E61700A608BA /* PureAlignedTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PureAlignedTimer.swift; sourceTree = "<group>"; };
+		3659511C27F80A5600A608BA /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
 		365D0E6827EF8FA700774736 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		365D0E6A27F0519E00774736 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		3671373027DC871F00BDE117 /* timelineApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = timelineApp.swift; sourceTree = "<group>"; };
@@ -135,6 +139,7 @@
 			children = (
 				3676774E27DF6098008AE4F8 /* PureCounter.swift */,
 				365D0E6827EF8FA700774736 /* Tracker.swift */,
+				3659511A27F7E61700A608BA /* PureAlignedTimer.swift */,
 			);
 			path = Logic;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 			isa = PBXGroup;
 			children = (
 				3671377F27DC97FF00BDE117 /* CounterTests.swift */,
+				3659511C27F80A5600A608BA /* TrackerTests.swift */,
 			);
 			path = TimelineCoreTests;
 			sourceTree = "<group>";
@@ -400,6 +406,7 @@
 				365D0E6927EF8FA700774736 /* Tracker.swift in Sources */,
 				365D0E6B27F0519E00774736 /* Storage.swift in Sources */,
 				3676774F27DF6098008AE4F8 /* PureCounter.swift in Sources */,
+				3659511B27F7E61700A608BA /* PureAlignedTimer.swift in Sources */,
 				3629E83E27EF5093001A6823 /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -408,6 +415,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3659511D27F80A5600A608BA /* TrackerTests.swift in Sources */,
 				3671378027DC97FF00BDE117 /* CounterTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

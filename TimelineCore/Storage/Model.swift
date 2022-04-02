@@ -33,3 +33,20 @@ public struct AppStruct: App {
     public let id: String
     public let trackingMode: TrackingMode
 }
+
+public struct LogStruct: Log {
+    public var timelineId: String
+    public var timeslotStart: Date
+    public var appId: String
+    public var trackedIdentifier: String
+    public var duration: TimeInterval
+}
+
+public struct TimelineStruct: Timeline {
+    public var id: String = UUID().uuidString
+    public var deviceName: String = ""
+    public var deviceSystem: String = ""
+    public var timezoneName: String = ""
+    public var timezoneShift: TimeInterval = 0
+    public var dateStart: Date
+}

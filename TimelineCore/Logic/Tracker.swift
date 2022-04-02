@@ -21,14 +21,25 @@ public class Tracker {
     private let storage: Storage
     private let time: TimeDependency
     private let snapshotter: Snapshotter
+    private let timer: AlignedTimer
+    private let alignInterval: TimeInterval
+    var currentTimelineId: String = UUID().uuidString
+    var fillTimelineDeviceInfo: (inout TimelineStruct)->() = { _ in }
     
-    public init(timeDependency: TimeDependency, storage: Storage, snapshotter: Snapshotter) {
+    public init(timeDependency: TimeDependency, storage: Storage, snapshotter: Snapshotter, alignInterval: TimeInterval = 5*60) {
         self.storage = storage
         self.time = timeDependency
         self.snapshotter = snapshotter
         self.counter = Counter(timeDependency: {
             return timeDependency.currentTime
         })
+        self.alignInterval = alignInterval
+        self.timer = AlignedTimer(alignInterval: alignInterval, timeDependency: {
+            return timeDependency.currentTime
+        })
+        self.timer.fire = { [weak self] in
+            self?.persist()
+        }
         self.snapshotter.notifyChange = { [weak self] in
             self?.tickAppCounter()
         }
@@ -40,6 +51,7 @@ public class Tracker {
     public var active = false {
         didSet {
             tickAppCounter()
+            timer.active = active
         }
     }
     
@@ -61,6 +73,26 @@ public class Tracker {
         let app = AppStruct(id: app.appId, trackingMode: .app)
         storage.store(app: app)
         return app
+    }
+    
+    private func persist() {
+        let previousTimeslotAnyMoment = time.currentTime.addingTimeInterval(-5)
+        let passed = previousTimeslotAnyMoment.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: alignInterval)
+        let timestotStart = previousTimeslotAnyMoment.addingTimeInterval(-passed)
+        var log = LogStruct(timelineId: currentTimelineId, timeslotStart: timestotStart, appId: "to be replaced", trackedIdentifier: "to be replaced", duration: 0)
+        if storage.fetchTimeline(id: currentTimelineId) == nil {
+            var timeline = TimelineStruct(dateStart: time.currentTime)
+            fillTimelineDeviceInfo(&timeline)
+            storage.store(timeline: timeline)
+        }
+        for (name, duration) in counter.statistics {
+            log.appId = name
+            log.trackedIdentifier = name
+            log.duration = duration
+            storage.store(log: log)
+        }
+        counter.clearAndPause()
+        tickAppCounter()
     }
     
     private func refreshTimeline() {
