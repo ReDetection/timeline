@@ -14,6 +14,7 @@
 		3659515A27F9555500A608BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515927F9555500A608BA /* main.swift */; };
 		3659515B27F9555500A608BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515927F9555500A608BA /* main.swift */; };
 		3659515D27F9698700A608BA /* CocoaTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515C27F9698700A608BA /* CocoaTime.swift */; };
+		3659515F27F9870700A608BA /* CocoaApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515E27F9870700A608BA /* CocoaApps.swift */; };
 		365D0E6927EF8FA700774736 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D0E6827EF8FA700774736 /* Tracker.swift */; };
 		365D0E6B27F0519E00774736 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D0E6A27F0519E00774736 /* Storage.swift */; };
 		3671375527DC872000BDE117 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3671375427DC872000BDE117 /* Tests_macOS.swift */; };
@@ -81,6 +82,7 @@
 		3659512127F9523F00A608BA /* timeline--macOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "timeline--macOS--Info.plist"; sourceTree = "<group>"; };
 		3659515927F9555500A608BA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		3659515C27F9698700A608BA /* CocoaTime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocoaTime.swift; sourceTree = "<group>"; };
+		3659515E27F9870700A608BA /* CocoaApps.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CocoaApps.swift; sourceTree = "<group>"; };
 		365D0E6827EF8FA700774736 /* Tracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tracker.swift; sourceTree = "<group>"; };
 		365D0E6A27F0519E00774736 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
 		3671373127DC871F00BDE117 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -170,6 +172,7 @@
 				3671373127DC871F00BDE117 /* ContentView.swift */,
 				3671373227DC872000BDE117 /* Assets.xcassets */,
 				3659515C27F9698700A608BA /* CocoaTime.swift */,
+				3659515E27F9870700A608BA /* CocoaApps.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -397,6 +400,7 @@
 				3659511F27F9479E00A608BA /* AppDelegate.swift in Sources */,
 				3671375B27DC872000BDE117 /* ContentView.swift in Sources */,
 				3659515D27F9698700A608BA /* CocoaTime.swift in Sources */,
+				3659515F27F9870700A608BA /* CocoaApps.swift in Sources */,
 				3659515A27F9555500A608BA /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
