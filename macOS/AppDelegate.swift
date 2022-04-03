@@ -1,11 +1,12 @@
 import Foundation
 import AppKit
 import TimelineCore
+import testing_utils
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var tracker: Tracker!
-    var storage: Storage!
+    var storage: Storage = MemoryStorage()
     var toggleCurrentAppItem: NSMenuItem!
     let appProvider = CocoaApps()
     
@@ -14,8 +15,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = NSImage(systemSymbolName: "stopwatch", accessibilityDescription: nil)
         createMenu()
         
-//        tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: 5*60)
-//        tracker.active = true
+        tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: 5*60)
+        tracker.active = true
         
         appProvider.notifyChange = { [weak self] in
             self?.updateCurrentApp()
