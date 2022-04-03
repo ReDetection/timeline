@@ -15,6 +15,7 @@
 		3659515B27F9555500A608BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515927F9555500A608BA /* main.swift */; };
 		3659515D27F9698700A608BA /* CocoaTime.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515C27F9698700A608BA /* CocoaTime.swift */; };
 		3659515F27F9870700A608BA /* CocoaApps.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515E27F9870700A608BA /* CocoaApps.swift */; };
+		3659516027F9BCB900A608BA /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511E27F9479E00A608BA /* AppDelegate.swift */; };
 		365D0E6927EF8FA700774736 /* Tracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D0E6827EF8FA700774736 /* Tracker.swift */; };
 		365D0E6B27F0519E00774736 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365D0E6A27F0519E00774736 /* Storage.swift */; };
 		3671375527DC872000BDE117 /* Tests_macOS.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3671375427DC872000BDE117 /* Tests_macOS.swift */; };
@@ -167,12 +168,8 @@
 		3671372F27DC871F00BDE117 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				3659515927F9555500A608BA /* main.swift */,
-				3659511E27F9479E00A608BA /* AppDelegate.swift */,
 				3671373127DC871F00BDE117 /* ContentView.swift */,
 				3671373227DC872000BDE117 /* Assets.xcassets */,
-				3659515C27F9698700A608BA /* CocoaTime.swift */,
-				3659515E27F9870700A608BA /* CocoaApps.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -191,6 +188,10 @@
 		3671373E27DC872000BDE117 /* macOS */ = {
 			isa = PBXGroup;
 			children = (
+				3659515927F9555500A608BA /* main.swift */,
+				3659511E27F9479E00A608BA /* AppDelegate.swift */,
+				3659515C27F9698700A608BA /* CocoaTime.swift */,
+				3659515E27F9870700A608BA /* CocoaApps.swift */,
 				3671373F27DC872000BDE117 /* macOS.entitlements */,
 				3659512127F9523F00A608BA /* timeline--macOS--Info.plist */,
 			);
@@ -430,6 +431,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3659516027F9BCB900A608BA /* AppDelegate.swift in Sources */,
 				3659511D27F80A5600A608BA /* TrackerTests.swift in Sources */,
 				3671378027DC97FF00BDE117 /* CounterTests.swift in Sources */,
 				3659515B27F9555500A608BA /* main.swift in Sources */,
