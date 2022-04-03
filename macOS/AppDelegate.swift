@@ -6,7 +6,7 @@ import testing_utils
 class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var tracker: Tracker!
-    var storage: Storage = MemoryStorage()
+    var storage = MemoryStorage()
     var toggleCurrentAppItem: NSMenuItem!
     let appProvider = CocoaApps()
     
@@ -15,6 +15,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statusItem.button?.image = NSImage(systemSymbolName: "stopwatch", accessibilityDescription: nil)
         createMenu()
         
+        storage.logStores = true
         tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: 5*60)
         tracker.active = true
         

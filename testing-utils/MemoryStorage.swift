@@ -5,6 +5,7 @@ public class MemoryStorage: Storage {
     public var apps: [App] = []
     public var logs: [Log] = []
     public var timelines: [Timeline] = []
+    public var logStores = false
     
     public init() {}
     
@@ -13,6 +14,7 @@ public class MemoryStorage: Storage {
             logs.remove(at: existingIndex)
         }
         logs.append(log)
+        print("Added \(log)")
     }
     
     public func store(app: App) {
@@ -20,6 +22,7 @@ public class MemoryStorage: Storage {
             apps.remove(at: existingIndex)
         }
         apps.append(app)
+        print("Added \(app)")
     }
     
     public func store(timeline: Timeline) {
@@ -27,6 +30,7 @@ public class MemoryStorage: Storage {
             timelines.remove(at: existingIndex)
         }
         timelines.append(timeline)
+        print("Added \(timeline)")
     }
     
     public func fetchLogs(since: Date, till: Date) -> [Log] {
