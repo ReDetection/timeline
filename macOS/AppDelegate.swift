@@ -8,17 +8,17 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var tracker: Tracker!
     var storage = MemoryStorage()
     var toggleCurrentAppItem: NSMenuItem!
+    var togglePauseItem: NSMenuItem!
     let appProvider = CocoaApps()
     
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("Startup")
-        statusItem.button?.image = NSImage(systemSymbolName: "stopwatch", accessibilityDescription: nil)
-        createMenu()
         
         storage.logStores = true
         tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: 5*60)
         tracker.active = true
-        
+
+        createMenu()
         appProvider.notifyChange = { [weak self] in
             self?.updateCurrentApp()
         }
@@ -29,6 +29,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         menu.addItem(withTitle: "Show", action: #selector(openUI), keyEquivalent: "")
         menu.addItem(NSMenuItem.separator())
 
+        togglePauseItem = NSMenuItem(title: "Pause", action: #selector(togglePause), keyEquivalent: "")
+        menu.addItem(togglePauseItem)
+        updatePauseState()
+        //todo scheduled pause / unpause
+        
         toggleCurrentAppItem = NSMenuItem(title: "Track current app", action: #selector(toggleAppTracking), keyEquivalent: "")
         menu.addItem(toggleCurrentAppItem)
         updateCurrentApp()
@@ -48,6 +53,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     @objc func toggleAppTracking() {
         //todo
+    }
+    
+    @objc func togglePause() {
+        tracker.active.toggle()
+        updatePauseState()
+    }
+    
+    func updatePauseState() {
+        togglePauseItem.state = tracker.active ? .off : .on
+        statusItem.button?.image = NSImage(systemSymbolName: tracker.active ? "stopwatch" : "pause", accessibilityDescription: nil)
     }
     
     func updateCurrentApp() {
