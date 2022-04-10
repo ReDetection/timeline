@@ -104,13 +104,19 @@ public class Tracker {
     }
     
     private func refreshTimeline() {
-        fatalError() //TODO: IMPLEMENT
+        print("Significant time change!")
+        //TODO: IMPLEMENT
     }
     
 }
 
 
-private struct AppKey: Hashable {
-    var appId: String
-    var activity: String
+public struct AppKey: Hashable {
+    public var appId: String
+    public var activity: String
+    
+    public init(appId: String, activity: String) {
+        self.appId = appId
+        self.activity = activity
+    }
 }

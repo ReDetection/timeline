@@ -40,6 +40,14 @@ public struct LogStruct: Log {
     public var appId: String
     public var trackedIdentifier: String
     public var duration: TimeInterval
+    
+    public init(timelineId: String, timeslotStart: Date, appId: String, trackedIdentifier: String, duration: TimeInterval) {
+        self.timelineId = timelineId
+        self.timeslotStart = timeslotStart
+        self.appId = appId
+        self.trackedIdentifier = trackedIdentifier
+        self.duration = duration
+    }
 }
 
 public struct TimelineStruct: Timeline {
