@@ -6,7 +6,7 @@ class ViewModel: ObservableObject {
     @Published var dateLogs: [Log] = []
 }
 
-struct ContentView: View {
+struct StatisticsView: View {
     @StateObject var viewModel: ViewModel
     var body: some View {
         VStack {
@@ -18,7 +18,7 @@ struct ContentView: View {
     }
 }
 
-struct ContentView_Previews: PreviewProvider {
+struct StatisticsView_Previews: PreviewProvider {
     static let model: ViewModel = {
         let result = ViewModel()
         result.dateLogs = [
@@ -31,7 +31,7 @@ struct ContentView_Previews: PreviewProvider {
     }()
     
     static var previews: some View {
-        ContentView(viewModel: model)
+        StatisticsView(viewModel: model)
     }
 }
 

@@ -2,6 +2,7 @@ import Foundation
 import AppKit
 import TimelineCore
 import testing_utils
+import SwiftUI
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
@@ -10,6 +11,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     var toggleCurrentAppItem: NSMenuItem!
     var togglePauseItem: NSMenuItem!
     let appProvider = CocoaApps()
+    var statisticsWindow: NSWindow?
     
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("Startup")
@@ -48,7 +50,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func openUI() {
-        //todo
+        let statisticsViewModel = ViewModel()
+        statisticsViewModel.dateLogs = storage.logs
+        let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
+        self.statisticsWindow = NSWindow(contentViewController: vc)
+        self.statisticsWindow?.setContentSize(.init(width: 400, height: 400))
+        self.statisticsWindow?.makeKeyAndOrderFront(nil)
+        self.statisticsWindow?.setIsVisible(true)
     }
     
     @objc func toggleAppTracking() {
