@@ -4,6 +4,8 @@ import TimelineCore
 import testing_utils
 import SwiftUI
 
+private let alignInterval: TimeInterval = 5*60
+
 class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var tracker: Tracker!
@@ -17,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         print("Startup")
         
         storage.logStores = true
-        tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: 5*60)
+        tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: alignInterval)
         tracker.active = true
 
         createMenu()
@@ -53,6 +55,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         tracker.persist()
         let statisticsViewModel = ViewModel()
         statisticsViewModel.dateLogs = storage.logs
+        statisticsViewModel.interval = alignInterval
         let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
         self.statisticsWindow = NSWindow(contentViewController: vc)
         self.statisticsWindow?.setContentSize(.init(width: 400, height: 400))

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		3629E83E27EF5093001A6823 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3629E83D27EF5093001A6823 /* Model.swift */; };
 		36404C1727F9D6AC0071D495 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511E27F9479E00A608BA /* AppDelegate.swift */; };
+		3658982A2802FC0800949B50 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365898292802FC0800949B50 /* Date+Extensions.swift */; };
 		3659511B27F7E61700A608BA /* PureAlignedTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511A27F7E61700A608BA /* PureAlignedTimer.swift */; };
 		3659511D27F80A5600A608BA /* TrackerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511C27F80A5600A608BA /* TrackerTests.swift */; };
 		3659515A27F9555500A608BA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659515927F9555500A608BA /* main.swift */; };
@@ -88,6 +89,7 @@
 
 /* Begin PBXFileReference section */
 		3629E83D27EF5093001A6823 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		365898292802FC0800949B50 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		3659511A27F7E61700A608BA /* PureAlignedTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PureAlignedTimer.swift; sourceTree = "<group>"; };
 		3659511C27F80A5600A608BA /* TrackerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerTests.swift; sourceTree = "<group>"; };
 		3659511E27F9479E00A608BA /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -211,6 +213,7 @@
 			children = (
 				3671373127DC871F00BDE117 /* StatisticsView.swift */,
 				3671373227DC872000BDE117 /* Assets.xcassets */,
+				365898292802FC0800949B50 /* Date+Extensions.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -492,6 +495,7 @@
 				3659515F27F9870700A608BA /* CocoaApps.swift in Sources */,
 				36404C1727F9D6AC0071D495 /* AppDelegate.swift in Sources */,
 				3659515A27F9555500A608BA /* main.swift in Sources */,
+				3658982A2802FC0800949B50 /* Date+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
