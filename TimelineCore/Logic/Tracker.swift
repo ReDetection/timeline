@@ -81,7 +81,7 @@ public class Tracker {
         return app
     }
     
-    private func persist() {
+    public func persist() {
         let previousTimeslotAnyMoment = time.currentTime.addingTimeInterval(-5)
         let passed = previousTimeslotAnyMoment.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: alignInterval)
         let timestotStart = previousTimeslotAnyMoment.addingTimeInterval(-passed)

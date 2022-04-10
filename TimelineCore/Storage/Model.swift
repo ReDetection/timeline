@@ -50,6 +50,12 @@ public struct LogStruct: Log {
     }
 }
 
+extension Log {
+    public func cow(duration: TimeInterval) -> LogStruct {
+        return LogStruct(timelineId: timelineId, timeslotStart: timeslotStart, appId: appId, trackedIdentifier: trackedIdentifier, duration: duration)
+    }
+}
+
 public struct TimelineStruct: Timeline {
     public var id: String = UUID().uuidString
     public var deviceName: String = ""

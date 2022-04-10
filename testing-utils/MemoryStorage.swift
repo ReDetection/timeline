@@ -9,8 +9,11 @@ public class MemoryStorage: Storage {
     
     public init() {}
     
-    public func store(log: Log) {
+    public func store(log newLog: Log) {
+        var log = newLog
         if let existingIndex = logs.firstIndex(where: { $0.appId == log.appId && $0.timelineId == log.timelineId && $0.timeslotStart == log.timeslotStart && $0.trackedIdentifier == log.trackedIdentifier }) {
+            let existing = logs[existingIndex]
+            log = existing.cow(duration: existing.duration + log.duration)
             logs.remove(at: existingIndex)
         }
         logs.append(log)

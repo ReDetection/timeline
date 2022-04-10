@@ -50,6 +50,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func openUI() {
+        tracker.persist()
         let statisticsViewModel = ViewModel()
         statisticsViewModel.dateLogs = storage.logs
         let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
