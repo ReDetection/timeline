@@ -42,11 +42,21 @@ struct TopAppsView: View {
             HStack {
                 Text(app.activity)
                 Spacer()
-                Text("\(app.duration)")
+                Text(app.duration.readableTime)
             }
         }
     }
-    
+}
+
+extension TimeInterval {
+    var readableTime: String {
+        let formatter = DateComponentsFormatter()
+        formatter.maximumUnitCount = 2
+        formatter.unitsStyle = .abbreviated
+        formatter.zeroFormattingBehavior = .dropAll
+        formatter.allowedUnits = [.hour, .minute, .second]
+        return formatter.string(from: self)!
+    }
 }
 
 extension Array where Element == Log {
