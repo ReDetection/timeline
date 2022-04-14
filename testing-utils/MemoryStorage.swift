@@ -17,7 +17,9 @@ public class MemoryStorage: Storage {
             logs.remove(at: existingIndex)
         }
         logs.append(log)
-        print("Added \(log)")
+        if logStores {
+            print("Added \(log)")
+        }
     }
     
     public func store(app: App) {
@@ -25,7 +27,9 @@ public class MemoryStorage: Storage {
             apps.remove(at: existingIndex)
         }
         apps.append(app)
-        print("Added \(app)")
+        if logStores {
+            print("Added \(app)")
+        }
     }
     
     public func store(timeline: Timeline) {
@@ -33,7 +37,9 @@ public class MemoryStorage: Storage {
             timelines.remove(at: existingIndex)
         }
         timelines.append(timeline)
-        print("Added \(timeline)")
+        if logStores {
+            print("Added \(timeline)")
+        }
     }
     
     public func fetchLogs(since: Date, till: Date) -> [Log] {
