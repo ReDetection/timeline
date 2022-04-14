@@ -27,11 +27,11 @@ struct TimeStacksView: View {
         let timeslots = stride(from: date.dateBegin.secondsSince2001, to: date.dateBegin.nextDay.secondsSince2001, by: Int(alignInterval))
             .map { Date(timeIntervalSinceReferenceDate: TimeInterval($0)) }
         GeometryReader { geometry in
-            HStack {
+            HStack(alignment: .bottom, spacing: 2) {
                 ForEach(timeslots) { slot in
-                    VStack(alignment: .trailing) {
+                    VStack(alignment: .center, spacing: 2) {
                         ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
-                            Rectangle().frame(width: 5, height: total.duration, alignment: .bottom)
+                            Rectangle().frame(width: 5, height: total.duration / 3, alignment: .bottom)
                         }
                     }
                 }
