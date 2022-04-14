@@ -31,7 +31,9 @@ struct TimeStacksView: View {
                 ForEach(timeslots) { slot in
                     VStack(alignment: .center, spacing: 2) {
                         ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
-                            Rectangle().frame(width: 5, height: total.duration / 3, alignment: .bottom)
+                            Rectangle()
+                                .fill(total.appId.colorize)
+                                .frame(width: 5, height: total.duration / 3, alignment: .bottom)
                                 .contextMenu {
                                     Text(total.activity)
                                 }
@@ -55,10 +57,10 @@ struct StatisticsView_Previews: PreviewProvider {
     static let model: ViewModel = {
         let result = ViewModel()
         result.dateLogs = [
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "123", activityName: "eger", duration: 50),
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "app2", activityName: "demo2", duration: 230),
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "app3", activityName: "time", duration: 20),
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "123", activityName: "eger", duration: 50),
+            LogStruct(timelineId: "qwe", timeslotStart: Date().alignedToHour, appId: "123", activityName: "eger", duration: 50),
+            LogStruct(timelineId: "qwe", timeslotStart: Date().alignedToHour, appId: "app2", activityName: "demo2", duration: 230),
+            LogStruct(timelineId: "qwe", timeslotStart: Date().alignedToHour, appId: "app3", activityName: "time", duration: 20),
+            LogStruct(timelineId: "qwe", timeslotStart: Date().alignedToHour, appId: "123", activityName: "eger", duration: 50),
         ]
         return result
     }()
@@ -73,6 +75,9 @@ struct TopAppsView: View {
     var body: some View {
         ForEach(topApps.prefix(5)) { app in
             HStack {
+                Rectangle()
+                    .fill(app.appId.colorize)
+                    .frame(width: 20, height: 20, alignment: .center)
                 Text(app.activity)
                 Spacer()
                 Text(app.duration.readableTime)
@@ -128,5 +133,11 @@ struct AppTotal {
 extension AppTotal: Identifiable {
     var id: String {
         return appId + activity
+    }
+}
+
+extension String {
+    var colorize: Color {
+        return [Color.blue, .brown, .cyan, .gray, .green, .orange, .pink, .purple, .red , .yellow, .black, .white, .mint, .indigo][abs(self.hashValue) % 14]
     }
 }
