@@ -32,6 +32,9 @@ struct TimeStacksView: View {
                     VStack(alignment: .center, spacing: 2) {
                         ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
                             Rectangle().frame(width: 5, height: total.duration / 3, alignment: .bottom)
+                                .contextMenu {
+                                    Text(total.activity)
+                                }
                         }
                     }
                 }
