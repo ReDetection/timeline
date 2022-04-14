@@ -25,7 +25,7 @@ public protocol Log {
     var timelineId: String { get }
     var timeslotStart: Date { get }
     var appId: String { get }
-    var trackedIdentifier: String { get }
+    var activityName: String { get }
     var duration: TimeInterval { get }
 }
 
@@ -43,21 +43,21 @@ public struct LogStruct: Log {
     public var timelineId: String
     public var timeslotStart: Date
     public var appId: String
-    public var trackedIdentifier: String
+    public var activityName: String
     public var duration: TimeInterval
     
-    public init(timelineId: String, timeslotStart: Date, appId: String, trackedIdentifier: String, duration: TimeInterval) {
+    public init(timelineId: String, timeslotStart: Date, appId: String, activityName: String, duration: TimeInterval) {
         self.timelineId = timelineId
         self.timeslotStart = timeslotStart
         self.appId = appId
-        self.trackedIdentifier = trackedIdentifier
+        self.activityName = activityName
         self.duration = duration
     }
 }
 
 extension Log {
     public func cow(duration: TimeInterval) -> LogStruct {
-        return LogStruct(timelineId: timelineId, timeslotStart: timeslotStart, appId: appId, trackedIdentifier: trackedIdentifier, duration: duration)
+        return LogStruct(timelineId: timelineId, timeslotStart: timeslotStart, appId: appId, activityName: activityName, duration: duration)
     }
 }
 

@@ -51,10 +51,10 @@ struct StatisticsView_Previews: PreviewProvider {
     static let model: ViewModel = {
         let result = ViewModel()
         result.dateLogs = [
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "123", trackedIdentifier: "eger", duration: 50),
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "app2", trackedIdentifier: "demo2", duration: 230),
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "app3", trackedIdentifier: "time", duration: 20),
-            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "123", trackedIdentifier: "eger", duration: 50),
+            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "123", activityName: "eger", duration: 50),
+            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "app2", activityName: "demo2", duration: 230),
+            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "app3", activityName: "time", duration: 20),
+            LogStruct(timelineId: "qwe", timeslotStart: Date(), appId: "123", activityName: "eger", duration: 50),
         ]
         return result
     }()
@@ -91,7 +91,7 @@ extension TimeInterval {
 extension Array where Element == Log {
     var totals: [AppTotal] {
         return Dictionary(grouping: self) { log in
-                return AppKey(appId: log.appId, activity: log.trackedIdentifier)
+                return AppKey(appId: log.appId, activity: log.activityName)
             }
         .map { (app, logs) -> AppTotal in
             return AppTotal(appId: app.appId, activity: app.activity, duration: logs.reduce(0.0 as TimeInterval, {

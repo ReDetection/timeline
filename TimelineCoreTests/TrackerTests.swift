@@ -54,7 +54,7 @@ class TrackerTests: XCTestCase {
         XCTAssertEqual(storage.timelines.count, 1)
         XCTAssertEqual(storage.apps.map { $0.id }, ["com.demo.Folders"])
         XCTAssertEqual(storage.logs.map { $0.appId }, ["com.demo.Folders"])
-        XCTAssertEqual(storage.logs.map { $0.trackedIdentifier }, ["Folders"])
+        XCTAssertEqual(storage.logs.map { $0.activityName }, ["Folders"])
         XCTAssertEqual(storage.logs.map { $0.duration }, [2])
     }
     

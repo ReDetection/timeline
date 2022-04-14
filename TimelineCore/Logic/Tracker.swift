@@ -85,7 +85,7 @@ public class Tracker {
         let previousTimeslotAnyMoment = time.currentTime.addingTimeInterval(-5)
         let passed = previousTimeslotAnyMoment.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: alignInterval)
         let timestotStart = previousTimeslotAnyMoment.addingTimeInterval(-passed)
-        var log = LogStruct(timelineId: currentTimelineId, timeslotStart: timestotStart, appId: "to be replaced", trackedIdentifier: "to be replaced", duration: 0)
+        var log = LogStruct(timelineId: currentTimelineId, timeslotStart: timestotStart, appId: "to be replaced", activityName: "to be replaced", duration: 0)
         if storage.fetchTimeline(id: currentTimelineId) == nil {
             var timeline = TimelineStruct(id: currentTimelineId, dateStart: time.currentTime)
             fillTimelineDeviceInfo(&timeline)
@@ -93,7 +93,7 @@ public class Tracker {
         }
         for (appKey, duration) in counter.statistics {
             log.appId = appKey.appId
-            log.trackedIdentifier = appKey.activity
+            log.activityName = appKey.activity
             log.duration = duration
             storage.store(log: log)
         }

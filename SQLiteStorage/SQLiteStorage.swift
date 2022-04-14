@@ -56,7 +56,7 @@ public class SQLiteStorage: Storage {
             timelineId <- log.timelineId,
             timeslotStart <- log.timeslotStart,
             appId <- log.appId,
-            activityName <- log.trackedIdentifier,
+            activityName <- log.activityName,
             duration <- log.duration
         ))
     }

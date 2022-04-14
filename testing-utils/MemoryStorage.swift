@@ -11,7 +11,7 @@ public class MemoryStorage: Storage {
     
     public func store(log newLog: Log) {
         var log = newLog
-        if let existingIndex = logs.firstIndex(where: { $0.appId == log.appId && $0.timelineId == log.timelineId && $0.timeslotStart == log.timeslotStart && $0.trackedIdentifier == log.trackedIdentifier }) {
+        if let existingIndex = logs.firstIndex(where: { $0.appId == log.appId && $0.timelineId == log.timelineId && $0.timeslotStart == log.timeslotStart && $0.activityName == log.activityName }) {
             let existing = logs[existingIndex]
             log = existing.cow(duration: existing.duration + log.duration)
             logs.remove(at: existingIndex)
