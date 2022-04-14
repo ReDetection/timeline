@@ -32,6 +32,11 @@ public protocol Log {
 public struct AppStruct: App {
     public let id: String
     public let trackingMode: TrackingMode
+    
+    public init(id: String, trackingMode: TrackingMode) {
+        self.id = id
+        self.trackingMode = trackingMode
+    }
 }
 
 public struct LogStruct: Log {
@@ -64,3 +69,8 @@ public struct TimelineStruct: Timeline {
     public var timezoneShift: TimeInterval = 0
     public var dateStart: Date
 }
+
+extension LogStruct: Codable {}
+extension AppStruct: Codable {}
+extension TrackingMode: Codable {}
+extension TimelineStruct: Codable {}

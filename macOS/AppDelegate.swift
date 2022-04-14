@@ -3,13 +3,14 @@ import AppKit
 import TimelineCore
 import testing_utils
 import SwiftUI
+import SQLiteStorage
 
 private let alignInterval: TimeInterval = 5*60
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var tracker: Tracker!
-    var storage = MemoryStorage()
+    var storage: Storage!
     var toggleCurrentAppItem: NSMenuItem!
     var togglePauseItem: NSMenuItem!
     let appProvider = CocoaApps()
@@ -18,7 +19,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("Startup")
         
-        storage.logStores = true
+        let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
+            + "/" + Bundle.main.bundleIdentifier!
+        try? FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+        storage = try! SQLiteStorage(filepath: path + "/timeline.sqlite")
+        
         tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: alignInterval)
         tracker.active = true
 
@@ -54,7 +59,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openUI() {
         tracker.persist()
         let statisticsViewModel = ViewModel()
-        statisticsViewModel.dateLogs = storage.logs
+        statisticsViewModel.dateLogs = storage.fetchLogs(since: Date().dateBegin, till: Date().dateBegin.nextDay)
         statisticsViewModel.interval = alignInterval
         let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
         self.statisticsWindow = NSWindow(contentViewController: vc)
