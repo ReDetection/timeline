@@ -36,6 +36,7 @@ struct TimeStacksView: View {
                     }
                 }
             }
+            .frame(minWidth: 400, minHeight: 300, alignment: .bottom)
         }
     }
 }

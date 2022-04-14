@@ -63,7 +63,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         statisticsViewModel.interval = alignInterval
         let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
         self.statisticsWindow = NSWindow(contentViewController: vc)
-        self.statisticsWindow?.setContentSize(.init(width: 400, height: 400))
+        self.statisticsWindow?.title = "Timeline"
+        self.statisticsWindow?.setContentSize(.init(width: 700, height: 600))
         self.statisticsWindow?.makeKeyAndOrderFront(nil)
         self.statisticsWindow?.setIsVisible(true)
     }
