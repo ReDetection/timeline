@@ -117,6 +117,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		360A437628087CCF0088B091 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3629E83D27EF5093001A6823 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		365574DB2808029F00076EB8 /* SQLiteStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteStorage.swift; sourceTree = "<group>"; };
 		365898292802FC0800949B50 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
@@ -249,6 +250,7 @@
 		3671372A27DC871F00BDE117 = {
 			isa = PBXGroup;
 			children = (
+				360A437628087CCF0088B091 /* README.md */,
 				3671372F27DC871F00BDE117 /* Shared */,
 				3671373E27DC872000BDE117 /* macOS */,
 				3671375327DC872000BDE117 /* Tests macOS */,
