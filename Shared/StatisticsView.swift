@@ -35,7 +35,7 @@ struct TimeStacksView: View {
                                 .fill(total.appId.colorize)
                                 .frame(width: 5, height: total.duration / 3, alignment: .bottom)
                                 .contextMenu {
-                                    Text(total.activity)
+                                    Text("\(total.activity): \(total.duration.readableTime)")
                                 }
                         }
                     }
