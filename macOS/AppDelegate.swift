@@ -70,7 +70,12 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func toggleAppTracking() {
-        //todo
+        let appId = appProvider.currentApp.appId
+        let app = storage.fetchApps()[appId]
+        let newApp = AppStruct(id: appId, trackingMode: app?.trackingMode == .skip ? .app : .skip)
+        storage.store(app: newApp)
+        updateCurrentApp()
+        tracker.persist()
     }
     
     @objc func togglePause() {
@@ -85,7 +90,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func updateCurrentApp() {
         print("Active: " + self.appProvider.currentApp.appName)
-//        toggleCurrentAppItem.state = isBlockedApp ? .on : .off
         toggleCurrentAppItem.title = "Track app " + appProvider.currentApp.appName
+        toggleCurrentAppItem.state = storage.fetchApps()[appProvider.currentApp.appId]?.trackingMode == .skip ? .off : .on
     }
 }
