@@ -11,7 +11,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
     var tracker: Tracker!
     var storage: Storage!
-    var toggleCurrentAppItem: NSMenuItem!
+    var currentAppItem: NSMenuItem!
+    var skipTrackingItem: NSMenuItem!
+    var setAppTrackingItem: NSMenuItem!
+    var setTitleTrackingItem: NSMenuItem!
     var togglePauseItem: NSMenuItem!
     let appProvider = CocoaApps()
     var statisticsWindow: NSWindow?
@@ -36,15 +39,22 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     func createMenu() {
         let menu = NSMenu()
         menu.addItem(withTitle: "Show", action: #selector(openUI), keyEquivalent: "")
-        menu.addItem(NSMenuItem.separator())
 
         togglePauseItem = NSMenuItem(title: "Pause", action: #selector(togglePause), keyEquivalent: "")
         menu.addItem(togglePauseItem)
         updatePauseState()
         //todo scheduled pause / unpause
-        
-        toggleCurrentAppItem = NSMenuItem(title: "Track current app", action: #selector(toggleAppTracking), keyEquivalent: "")
-        menu.addItem(toggleCurrentAppItem)
+        menu.addItem(NSMenuItem.separator())
+
+        currentAppItem = NSMenuItem(title: "{Current app}", action: nil, keyEquivalent: "")
+        currentAppItem.isEnabled = false
+        skipTrackingItem = NSMenuItem(title: "Skip", action: #selector(setAppTracking), keyEquivalent: "")
+        setAppTrackingItem = NSMenuItem(title: "Track app name", action: #selector(setAppTracking), keyEquivalent: "")
+        setTitleTrackingItem = NSMenuItem(title: "Track window names", action: #selector(setAppTracking), keyEquivalent: "")
+        menu.addItem(currentAppItem)
+        menu.addItem(skipTrackingItem)
+        menu.addItem(setAppTrackingItem)
+        menu.addItem(setTitleTrackingItem)
         updateCurrentApp()
 
 //        let startAtLogin = NSMenuItem(title: "Start at login", action: #selector(toggleStartAtLogin(_:)), keyEquivalent: "")
@@ -69,10 +79,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.statisticsWindow?.setIsVisible(true)
     }
     
-    @objc func toggleAppTracking() {
-        let appId = appProvider.currentApp.appId
-        let app = storage.fetchApps()[appId]
-        let newApp = AppStruct(id: appId, trackingMode: app?.trackingMode == .skip ? .app : .skip)
+    @objc func setAppTracking(_ source: NSMenuItem) {
+        let newTracking = [skipTrackingItem: TrackingMode.skip, setAppTrackingItem: .app, setTitleTrackingItem: .titles][source] ?? .app
+        let newApp = AppStruct(id: appProvider.currentApp.appId, trackingMode: newTracking)
         storage.store(app: newApp)
         updateCurrentApp()
         tracker.persist()
@@ -90,7 +99,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func updateCurrentApp() {
         print("Active: " + self.appProvider.currentApp.appName)
-        toggleCurrentAppItem.title = "Track app " + appProvider.currentApp.appName
-        toggleCurrentAppItem.state = storage.fetchApps()[appProvider.currentApp.appId]?.trackingMode == .skip ? .off : .on
+        currentAppItem.title = appProvider.currentApp.appName
+        let trackingMode = storage.fetchApps()[appProvider.currentApp.appId]?.trackingMode ?? .app
+        skipTrackingItem.state = trackingMode == .skip ? .on : .off
+        setAppTrackingItem.state = trackingMode == .app ? .on : .off
+        setTitleTrackingItem.state = trackingMode == .titles ? .on : .off
     }
 }
