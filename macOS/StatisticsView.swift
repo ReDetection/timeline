@@ -183,6 +183,6 @@ extension AppTotal: Identifiable {
 
 extension String {
     var colorize: Color {
-        return [Color.blue, .brown, .cyan, .gray, .green, .orange, .pink, .purple, .red , .yellow, .black, .white, .mint, .indigo][abs(self.hashValue) % 14]
+        return [Color.blue, .gray, .green, .orange, .pink, .purple, .red , .yellow, .black, .white, ][abs(self.hashValue) % 10]
     }
 }
