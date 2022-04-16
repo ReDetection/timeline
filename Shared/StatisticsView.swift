@@ -37,6 +37,7 @@ struct TimeStacksView: View {
     var stacks: [Date: [Log]]
     var alignInterval: TimeInterval
     let secondsInHour: TimeInterval = 60*60
+    let fitFactor = 1.0/5.0
     
     func hourView(hourBegin: Date) -> some View {
         let timeslots = (0..<Int(secondsInHour / alignInterval)).map { hourBegin.addingTimeInterval(alignInterval * TimeInterval($0)) }
@@ -46,19 +47,20 @@ struct TimeStacksView: View {
                 .frame(width: 1, height: 30)
             
             ForEach(timeslots) { slot in
-                VStack(alignment: .center, spacing: 2) {
+                VStack(alignment: .center, spacing: 0) {
                     Rectangle()
                         .fill(.clear)
                         .frame(width: 5, height: 0, alignment: .bottom)
                     ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
                         Rectangle()
                             .fill(total.appId.colorize)
-                            .frame(width: 5, height: total.duration / 5, alignment: .bottom)
+                            .frame(width: 5, height: total.duration * fitFactor, alignment: .bottom)
                             .contextMenu {
                                 Text("\(total.activity): \(total.duration.readableTime)")
                             }
                     }
                 }
+                .frame(height: alignInterval * fitFactor, alignment: .bottom)
             }
         }
     }
@@ -76,7 +78,7 @@ struct TimeStacksView: View {
                 }
             }
         }
-        .frame(minWidth: 400, minHeight: 200, alignment: .bottom)
+        .frame(width: 800, alignment: .center)
     }
 }
 
