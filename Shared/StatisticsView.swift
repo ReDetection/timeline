@@ -13,8 +13,8 @@ struct StatisticsView: View {
         VStack {
             //todo date selector
             TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots, alignInterval: viewModel.interval)
+            Spacer(minLength: 16)
             TopAppsView(topApps: viewModel.dateLogs.totals)
-                .padding()
         }
     }
 }
@@ -26,7 +26,6 @@ struct TimeStacksView: View {
     var body: some View {
         let timeslots = stride(from: date.dateBegin.secondsSince2001, to: date.dateBegin.nextDay.secondsSince2001, by: Int(alignInterval))
             .map { Date(timeIntervalSinceReferenceDate: TimeInterval($0)) }
-        GeometryReader { geometry in
             HStack(alignment: .bottom, spacing: 2) {
                 ForEach(timeslots) { slot in
                     VStack(alignment: .center, spacing: 2) {
@@ -41,8 +40,7 @@ struct TimeStacksView: View {
                     }
                 }
             }
-            .frame(minWidth: 400, minHeight: 300, alignment: .bottom)
-        }
+            .frame(minWidth: 400, minHeight: 200, alignment: .bottom)
     }
 }
 
@@ -73,14 +71,19 @@ struct StatisticsView_Previews: PreviewProvider {
 struct TopAppsView: View {
     @State var topApps: [AppTotal] = []
     var body: some View {
-        ForEach(topApps.prefix(5)) { app in
-            HStack {
-                Rectangle()
-                    .fill(app.appId.colorize)
-                    .frame(width: 20, height: 20, alignment: .center)
-                Text(app.activity)
-                Spacer()
-                Text(app.duration.readableTime)
+        ScrollView {
+            LazyVStack {
+                ForEach(topApps) { app in
+                    HStack(spacing: 8) {
+                        Rectangle()
+                            .fill(app.appId.colorize)
+                            .frame(width: 20, height: 20, alignment: .center)
+                        Text(app.activity)
+                        Spacer()
+                        Text(app.duration.readableTime)
+                    }
+                    .padding(.horizontal, 20)
+                }
             }
         }
     }
@@ -91,7 +94,7 @@ extension TimeInterval {
         let formatter = DateComponentsFormatter()
         formatter.maximumUnitCount = 2
         formatter.unitsStyle = .abbreviated
-        formatter.zeroFormattingBehavior = .dropAll
+        formatter.zeroFormattingBehavior = .dropLeading
         formatter.allowedUnits = [.hour, .minute, .second]
         return formatter.string(from: self)!
     }
