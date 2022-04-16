@@ -21,6 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationWillFinishLaunching(_ notification: Notification) {
         print("Startup")
+        NSApplication.shared.setActivationPolicy(.accessory)
         
         let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
             + "/" + Bundle.main.bundleIdentifier!
@@ -67,6 +68,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     }
     
     @objc func openUI() {
+        self.statisticsWindow?.close()
         tracker.persist()
         let statisticsViewModel = ViewModel()
         statisticsViewModel.loadDate = { [weak self, weak statisticsViewModel] date in
@@ -78,8 +80,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         self.statisticsWindow = NSWindow(contentViewController: vc)
         self.statisticsWindow?.title = "Timeline"
         self.statisticsWindow?.setContentSize(.init(width: 760, height: 600))
-        self.statisticsWindow?.makeKeyAndOrderFront(nil)
+        self.statisticsWindow?.makeKeyAndOrderFront(self)
         self.statisticsWindow?.setIsVisible(true)
+        NSApplication.shared.activate(ignoringOtherApps: true)
     }
     
     @objc func setAppTracking(_ source: NSMenuItem) {
