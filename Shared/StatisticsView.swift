@@ -23,24 +23,44 @@ struct TimeStacksView: View {
     @State var date: Date
     @State var stacks: [Date: [Log]]
     @State var alignInterval: TimeInterval
-    var body: some View {
-        let timeslots = stride(from: date.dateBegin.secondsSince2001, to: date.dateBegin.nextDay.secondsSince2001, by: Int(alignInterval))
-            .map { Date(timeIntervalSinceReferenceDate: TimeInterval($0)) }
-            HStack(alignment: .bottom, spacing: 2) {
-                ForEach(timeslots) { slot in
-                    VStack(alignment: .center, spacing: 2) {
-                        ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
-                            Rectangle()
-                                .fill(total.appId.colorize)
-                                .frame(width: 5, height: total.duration / 3, alignment: .bottom)
-                                .contextMenu {
-                                    Text("\(total.activity): \(total.duration.readableTime)")
-                                }
-                        }
+    let secondsInHour: TimeInterval = 60*60
+    
+    func hourView(hourBegin: Date) -> some View {
+        let timeslots = (0..<Int(secondsInHour / alignInterval)).map { hourBegin.addingTimeInterval(alignInterval * TimeInterval($0)) }
+        return HStack(alignment: .bottom, spacing: 2) {
+            Rectangle()
+                .fill(Color.gray)
+                .frame(width: 1, height: 30)
+            
+            ForEach(timeslots) { slot in
+                VStack(alignment: .center, spacing: 2) {
+                    ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
+                        Rectangle()
+                            .fill(total.appId.colorize)
+                            .frame(width: 5, height: total.duration / 3, alignment: .bottom)
+                            .contextMenu {
+                                Text("\(total.activity): \(total.duration.readableTime)")
+                            }
                     }
                 }
             }
-            .frame(minWidth: 400, minHeight: 200, alignment: .bottom)
+        }
+    }
+    
+    var body: some View {
+        let hours = stride(from: date.dateBegin.secondsSince2001, to: date.dateBegin.nextDay.secondsSince2001, by: Int(secondsInHour))
+            .map { Date(timeIntervalSinceReferenceDate: TimeInterval($0)) }
+        HStack(alignment: .bottom, spacing: 2) {
+            ForEach(hours) { hour in
+                VStack(alignment: .leading) {
+                    hourView(hourBegin: hour)
+                    Text("\(hour.hour)")
+                        .lineLimit(1)
+                        .scaledToFill()
+                }
+            }
+        }
+        .frame(minWidth: 400, minHeight: 200, alignment: .bottom)
     }
 }
 

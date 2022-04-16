@@ -24,5 +24,13 @@ extension Date {
     var secondsSince2001: Int {
         return Int(timeIntervalSinceReferenceDate)
     }
+    
+    var minute: Int {
+        return Calendar.current.component(.minute, from: self)
+    }
+    
+    var hour: Int {
+        return Calendar.current.component(.hour, from: self)
+    }
 
 }
