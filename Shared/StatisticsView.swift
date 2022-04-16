@@ -5,13 +5,14 @@ class ViewModel: ObservableObject {
     @Published var chosenDate: Date = Date()
     @Published var dateLogs: [Log] = []
     @Published var interval: TimeInterval = 15*60
+    var loadDate: (Date)->() = { _ in }
 }
 
 struct StatisticsView: View {
     @StateObject var viewModel: ViewModel
     var body: some View {
-        VStack {
-            //todo date selector
+        VStack(alignment: .center) {
+            DateSelector(date: viewModel.chosenDate, didSelect: viewModel.loadDate)
             TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval)
             Spacer(minLength: 16)
             TopAppsView(topApps: viewModel.dateLogs.totals)
@@ -19,10 +20,22 @@ struct StatisticsView: View {
     }
 }
 
-struct TimeStacksView: View {
+struct DateSelector: View {
     @State var date: Date
-    @State var stacks: [Date: [Log]]
-    @State var alignInterval: TimeInterval
+    var didSelect: (Date) -> ()
+    var body: some View {
+            DatePicker("Show date", selection: $date, displayedComponents: .date)
+            .onChange(of: date, perform: { newValue in
+                didSelect(newValue)
+            })
+            .padding()
+    }
+}
+
+struct TimeStacksView: View {
+    var date: Date
+    var stacks: [Date: [Log]]
+    var alignInterval: TimeInterval
     let secondsInHour: TimeInterval = 60*60
     
     func hourView(hourBegin: Date) -> some View {

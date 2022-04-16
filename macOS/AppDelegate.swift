@@ -69,7 +69,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func openUI() {
         tracker.persist()
         let statisticsViewModel = ViewModel()
-        statisticsViewModel.dateLogs = storage.fetchLogs(since: Date().dateBegin, till: Date().dateBegin.nextDay)
+        statisticsViewModel.loadDate = { [weak self, weak statisticsViewModel] date in
+            statisticsViewModel?.dateLogs = self?.storage.fetchLogs(since: date.dateBegin, till: date.dateBegin.nextDay) ?? []
+            statisticsViewModel?.chosenDate = date
+        }
+        statisticsViewModel.loadDate(Date())
         let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
         self.statisticsWindow = NSWindow(contentViewController: vc)
         self.statisticsWindow?.title = "Timeline"
