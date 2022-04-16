@@ -24,7 +24,7 @@ struct DateSelector: View {
     @State var date: Date
     var didSelect: (Date) -> ()
     var body: some View {
-            DatePicker("Show date", selection: $date, displayedComponents: .date)
+        DatePicker("Show date", selection: $date, in: ...Date(), displayedComponents: .date)
             .onChange(of: date, perform: { newValue in
                 didSelect(newValue)
             })
