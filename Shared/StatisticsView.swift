@@ -107,12 +107,13 @@ struct StatisticsView_Previews: PreviewProvider {
 }
 
 struct TopAppsView: View {
-    @State var topApps: [AppTotal] = []
+    var topApps: [AppTotal] = []
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: 0) {
+                Spacer()
                 ForEach(topApps) { app in
-                    HStack(spacing: 8) {
+                    HStack(spacing: 0) {
                         Rectangle()
                             .fill(app.appId.colorize)
                             .frame(width: 20, height: 20, alignment: .center)
@@ -121,7 +122,9 @@ struct TopAppsView: View {
                         Text(app.duration.readableTime)
                     }
                     .padding(.horizontal, 20)
+                    .padding(.vertical, 8)
                 }
+                Spacer()
             }
         }
     }
