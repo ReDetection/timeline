@@ -117,6 +117,7 @@ struct TopAppsView: View {
                         Rectangle()
                             .fill(app.appId.colorize)
                             .frame(width: 20, height: 20, alignment: .center)
+                            .padding(.horizontal, 8)
                         Text(app.activity)
                         Spacer()
                         Text(app.duration.readableTime)
