@@ -70,11 +70,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         tracker.persist()
         let statisticsViewModel = ViewModel()
         statisticsViewModel.dateLogs = storage.fetchLogs(since: Date().dateBegin, till: Date().dateBegin.nextDay)
-        statisticsViewModel.interval = alignInterval
         let vc = NSHostingController(rootView: StatisticsView(viewModel: statisticsViewModel))
         self.statisticsWindow = NSWindow(contentViewController: vc)
         self.statisticsWindow?.title = "Timeline"
-        self.statisticsWindow?.setContentSize(.init(width: 700, height: 600))
+        self.statisticsWindow?.setContentSize(.init(width: 760, height: 600))
         self.statisticsWindow?.makeKeyAndOrderFront(nil)
         self.statisticsWindow?.setIsVisible(true)
     }

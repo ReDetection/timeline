@@ -32,5 +32,14 @@ extension Date {
     var hour: Int {
         return Calendar.current.component(.hour, from: self)
     }
+    
+    func aligned(to timeInterval: TimeInterval) -> Date {
+        return Date(timeIntervalSinceReferenceDate: self.timeIntervalSinceReferenceDate.shrinkDown(within: timeInterval))
+    }
 
+}
+extension TimeInterval {
+    func shrinkDown(within timeInterval: TimeInterval) -> TimeInterval {
+        return TimeInterval(floor(self / timeInterval) * timeInterval);
+    }
 }

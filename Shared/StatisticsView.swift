@@ -4,7 +4,7 @@ import TimelineCore
 class ViewModel: ObservableObject {
     @Published var chosenDate: Date = Date()
     @Published var dateLogs: [Log] = []
-    @Published var interval: TimeInterval = 5*60
+    @Published var interval: TimeInterval = 15*60
 }
 
 struct StatisticsView: View {
@@ -12,7 +12,7 @@ struct StatisticsView: View {
     var body: some View {
         VStack {
             //todo date selector
-            TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots, alignInterval: viewModel.interval)
+            TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval)
             Spacer(minLength: 16)
             TopAppsView(topApps: viewModel.dateLogs.totals)
         }
@@ -34,10 +34,13 @@ struct TimeStacksView: View {
             
             ForEach(timeslots) { slot in
                 VStack(alignment: .center, spacing: 2) {
+                    Rectangle()
+                        .fill(.clear)
+                        .frame(width: 5, height: 0, alignment: .bottom)
                     ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
                         Rectangle()
                             .fill(total.appId.colorize)
-                            .frame(width: 5, height: total.duration / 3, alignment: .bottom)
+                            .frame(width: 5, height: total.duration / 5, alignment: .bottom)
                             .contextMenu {
                                 Text("\(total.activity): \(total.duration.readableTime)")
                             }
@@ -134,8 +137,8 @@ extension Array where Element == Log {
             l.duration > r.duration
         }
     }
-    var timeslots: [Date: [Log]] {
-        return Dictionary(grouping: self, by: { $0.timeslotStart })
+    func timeslots(alignInterval: TimeInterval) -> [Date: [Log]] {
+        return Dictionary(grouping: self, by: { $0.timeslotStart.aligned(to: alignInterval) })
             .mapValues { logs in
                 return logs.sorted { l, r in
                     if l.timelineId == r.timelineId {
