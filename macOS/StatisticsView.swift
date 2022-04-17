@@ -12,7 +12,14 @@ struct StatisticsView: View {
     @StateObject var viewModel: ViewModel
     var body: some View {
         VStack(alignment: .center) {
-            DateSelector(date: viewModel.chosenDate, didSelect: viewModel.loadDate)
+            HStack(alignment: .firstTextBaseline, spacing: 140) {
+                DateSelector(date: viewModel.chosenDate, didSelect: viewModel.loadDate)
+                    .frame(width: 200, alignment: .leading)
+                Spacer()
+                Text("Total: \(viewModel.dateLogs.grandTotal.readableTime)")
+            }
+            .padding()
+            
             TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval)
             Spacer(minLength: 16)
             TopAppsView(topApps: viewModel.dateLogs.totals)
@@ -28,7 +35,6 @@ struct DateSelector: View {
             .onChange(of: date, perform: { newValue in
                 didSelect(newValue)
             })
-            .padding()
     }
 }
 
@@ -166,6 +172,9 @@ extension Array where Element == Log {
                     return l.timelineId < r.timelineId
                 }
             }
+    }
+    var grandTotal: TimeInterval {
+        return self.reduce(0.0 as TimeInterval) { $0 + $1.duration }
     }
 }
 
