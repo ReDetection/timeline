@@ -8,6 +8,8 @@ class ViewModel: ObservableObject {
     var loadDate: (Date)->() = { _ in }
 }
 
+fileprivate let topColors: [Color] = [.blue, .purple, .red, .orange, .yellow]
+
 struct StatisticsView: View {
     @StateObject var viewModel: ViewModel
     var body: some View {
@@ -20,9 +22,8 @@ struct StatisticsView: View {
             }
             .padding()
             let totals = viewModel.dateLogs.totals
-            let count = 0..<min(5, totals.count)
-            let colorConfiguration = Dictionary(uniqueKeysWithValues: zip(totals[count].map(\.appId), [Color.blue, .purple, .red, .yellow, .white][count]))
-            TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval, colors: colorConfiguration)
+            let colorConfiguration = Dictionary(uniqueKeysWithValues: totals.map { ($0.appId, $0.assignedColor!) } )
+            TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval, colors: colorConfiguration, appOrder: totals.map { $0.appId } )
             Spacer(minLength: 16)
             TopAppsView(topApps: totals, colors: colorConfiguration)
         }
@@ -47,6 +48,7 @@ struct TimeStacksView: View {
     let secondsInHour: TimeInterval = 60*60
     let fitFactor = 1.0/5.0
     let colors: [String: Color]
+    let appOrder: [String]
     
     func hourView(hourBegin: Date) -> some View {
         let timeslots = (0..<Int(secondsInHour / alignInterval)).map { hourBegin.addingTimeInterval(alignInterval * TimeInterval($0)) }
@@ -60,9 +62,10 @@ struct TimeStacksView: View {
                     Rectangle()
                         .fill(.clear)
                         .frame(width: 5, height: 0, alignment: .bottom)
-                    ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
+                    let sortedTotals = stacks[slot]?.totals.sorted { appOrder.firstIndex(of: $0.appId) ?? 99999 > appOrder.firstIndex(of: $1.appId) ?? 99999 }
+                    ForEach(sortedTotals ?? [], id: \.appId) { total in
                         Rectangle()
-                            .fill(colors[total.appId] ?? .gray)
+                            .fill(colors[total.appId] ?? .green)
                             .frame(width: 5, height: total.duration * fitFactor, alignment: .bottom)
                             .contextMenu {
                                 Text("\(total.activity): \(total.duration.readableTime)")
@@ -154,7 +157,7 @@ extension TimeInterval {
 
 extension Array where Element == Log {
     var totals: [AppTotal] {
-        return Dictionary(grouping: self) { log in
+        var sortedTotals = Dictionary(grouping: self) { log in
                 return AppKey(appId: log.appId, activity: log.activityName)
             }
         .map { (app, logs) -> AppTotal in
@@ -165,6 +168,10 @@ extension Array where Element == Log {
         .sorted { l, r in
             l.duration > r.duration
         }
+        for i in 0..<sortedTotals.count {
+            sortedTotals[i].assignedColor = i < topColors.count ? topColors[i] : i % 2 == 0 ? .white : .gray
+        }
+        return sortedTotals
     }
     func timeslots(alignInterval: TimeInterval) -> [Date: [Log]] {
         return Dictionary(grouping: self, by: { $0.timeslotStart.aligned(to: alignInterval) })
@@ -186,6 +193,7 @@ struct AppTotal {
     var appId: String
     var activity: String
     var duration: TimeInterval
+    var assignedColor: Color?
 }
 
 extension AppTotal: Identifiable {
