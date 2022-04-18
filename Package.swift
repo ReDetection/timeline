@@ -3,6 +3,23 @@
 
 import PackageDescription
 
+func platformDependentTargets() -> [Target] {
+#if os(macOS)
+    return [
+        .executableTarget(
+            name: "Timeline",
+            dependencies: ["TimelineCore", "SQLiteStorage"],
+            path: "macOS/",
+            resources: [
+                .copy("macOS/macOS.entitlements"),
+                .copy("macOS/timeline--macOS--Info.plist"),
+            ]),
+    ]
+#else
+    return []
+#endif
+}
+
 let package = Package(
     name: "timeline",
     platforms: [
@@ -19,7 +36,6 @@ let package = Package(
             name: "TimelineCore",
             dependencies: [],
             path: "TimelineCore/"),
-        
         .target(
             name: "SQLiteStorage",
             dependencies: [
@@ -31,17 +47,9 @@ let package = Package(
             name: "testing_utils",
             dependencies: ["TimelineCore"],
             path: "testing-utils/"),
-        .executableTarget(
-            name: "Timeline",
-            dependencies: ["TimelineCore", "SQLiteStorage"],
-            path: "macOS/",
-            resources: [
-                .copy("macOS/macOS.entitlements"),
-                .copy("macOS/timeline--macOS--Info.plist"),
-            ]),
         .testTarget(
             name: "TimelineCoreTests",
             dependencies: ["TimelineCore", "testing_utils"],
             path: "TimelineCoreTests/"),
-    ]
+    ] + platformDependentTargets()
 )
