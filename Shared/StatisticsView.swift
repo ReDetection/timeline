@@ -19,10 +19,12 @@ struct StatisticsView: View {
                 Text("Total: \(viewModel.dateLogs.grandTotal.readableTime)")
             }
             .padding()
-            
-            TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval)
+            let totals = viewModel.dateLogs.totals
+            let count = 0..<min(5, totals.count)
+            let colorConfiguration = Dictionary(uniqueKeysWithValues: zip(totals[count].map(\.appId), [Color.blue, .purple, .red, .yellow, .white][count]))
+            TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval, colors: colorConfiguration)
             Spacer(minLength: 16)
-            TopAppsView(topApps: viewModel.dateLogs.totals)
+            TopAppsView(topApps: totals, colors: colorConfiguration)
         }
     }
 }
@@ -44,13 +46,14 @@ struct TimeStacksView: View {
     var alignInterval: TimeInterval
     let secondsInHour: TimeInterval = 60*60
     let fitFactor = 1.0/5.0
+    let colors: [String: Color]
     
     func hourView(hourBegin: Date) -> some View {
         let timeslots = (0..<Int(secondsInHour / alignInterval)).map { hourBegin.addingTimeInterval(alignInterval * TimeInterval($0)) }
         return HStack(alignment: .bottom, spacing: 2) {
             Rectangle()
                 .fill(Color.gray)
-                .frame(width: 1, height: 30)
+                .frame(width: 1, height: 5*60 * fitFactor)
             
             ForEach(timeslots) { slot in
                 VStack(alignment: .center, spacing: 0) {
@@ -59,7 +62,7 @@ struct TimeStacksView: View {
                         .frame(width: 5, height: 0, alignment: .bottom)
                     ForEach(stacks[slot]?.totals ?? [], id: \.appId) { total in
                         Rectangle()
-                            .fill(total.appId.colorize)
+                            .fill(colors[total.appId] ?? .gray)
                             .frame(width: 5, height: total.duration * fitFactor, alignment: .bottom)
                             .contextMenu {
                                 Text("\(total.activity): \(total.duration.readableTime)")
@@ -114,6 +117,7 @@ struct StatisticsView_Previews: PreviewProvider {
 
 struct TopAppsView: View {
     var topApps: [AppTotal] = []
+    let colors: [String: Color]
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
@@ -121,7 +125,7 @@ struct TopAppsView: View {
                 ForEach(topApps) { app in
                     HStack(spacing: 0) {
                         Rectangle()
-                            .fill(app.appId.colorize)
+                            .fill(colors[app.appId] ?? .clear)
                             .frame(width: 20, height: 20, alignment: .center)
                             .padding(.horizontal, 8)
                         Text(app.activity)
@@ -187,11 +191,5 @@ struct AppTotal {
 extension AppTotal: Identifiable {
     var id: String {
         return appId + activity
-    }
-}
-
-extension String {
-    var colorize: Color {
-        return [Color.blue, .brown, .cyan, .gray, .green, .orange, .pink, .purple, .red , .yellow, .black, .white, .mint, .indigo][abs(self.hashValue) % 14]
     }
 }
