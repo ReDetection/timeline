@@ -22,7 +22,7 @@ struct StatisticsView: View {
             }
             .padding()
             let totals = viewModel.dateLogs.totals
-            let colorConfiguration = Dictionary(uniqueKeysWithValues: totals.map { ($0.appId, $0.assignedColor!) } )
+            let colorConfiguration = Dictionary(uniqueKeysWithValues: totals.map { (AppKey(appId: $0.appId, activity: $0.activity), $0.assignedColor ?? .black) } )
             TimeStacksView(date: viewModel.chosenDate, stacks: viewModel.dateLogs.timeslots(alignInterval: viewModel.interval), alignInterval: viewModel.interval, colors: colorConfiguration, appOrder: totals.map { $0.appId } )
             Spacer(minLength: 16)
             TopAppsView(topApps: totals, colors: colorConfiguration)
@@ -47,7 +47,7 @@ struct TimeStacksView: View {
     var alignInterval: TimeInterval
     let secondsInHour: TimeInterval = 60*60
     let fitFactor = 1.0/5.0
-    let colors: [String: Color]
+    let colors: [AppKey: Color]
     let appOrder: [String]
     
     func hourView(hourBegin: Date) -> some View {
@@ -63,9 +63,9 @@ struct TimeStacksView: View {
                         .fill(.clear)
                         .frame(width: 5, height: 0, alignment: .bottom)
                     let sortedTotals = stacks[slot]?.totals.sorted { appOrder.firstIndex(of: $0.appId) ?? 99999 > appOrder.firstIndex(of: $1.appId) ?? 99999 }
-                    ForEach(sortedTotals ?? [], id: \.appId) { total in
+                    ForEach(sortedTotals ?? []) { total in
                         Rectangle()
-                            .fill(colors[total.appId] ?? .green)
+                            .fill(colors[AppKey(appId: total.appId, activity: total.activity)] ?? .green)
                             .frame(width: 5, height: total.duration * fitFactor, alignment: .bottom)
                             .contextMenu {
                                 Text("\(total.activity): \(total.duration.readableTime)")
@@ -120,7 +120,7 @@ struct StatisticsView_Previews: PreviewProvider {
 
 struct TopAppsView: View {
     var topApps: [AppTotal] = []
-    let colors: [String: Color]
+    let colors: [AppKey: Color]
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 0) {
@@ -128,7 +128,7 @@ struct TopAppsView: View {
                 ForEach(topApps) { app in
                     HStack(spacing: 0) {
                         Rectangle()
-                            .fill(colors[app.appId] ?? .clear)
+                            .fill(colors[AppKey(appId: app.appId, activity: app.activity)] ?? .clear)
                             .frame(width: 20, height: 20, alignment: .center)
                             .padding(.horizontal, 8)
                         Text(app.activity)
