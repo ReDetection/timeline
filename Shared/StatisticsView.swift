@@ -8,7 +8,13 @@ class ViewModel: ObservableObject {
     var loadDate: (Date)->() = { _ in }
 }
 
-fileprivate let topColors: [Color] = [.blue, .purple, .red, .orange, .yellow]
+fileprivate let topColors: [Color] = [
+    .init(red: 98.0/255, green: 148.0/255, blue: 255.0/255),
+    .init(red: 234.0/255, green: 124.0/255, blue: 207.0/255),
+    .init(red: 154.0/255, green: 90.0/255, blue: 96.0/255),
+    .init(red: 111.0/255, green: 249.0/255, blue: 255.0/255),
+    .init(red: 220.0/255, green: 203.0/255, blue: 116.0/255),
+]
 
 struct StatisticsView: View {
     @StateObject var viewModel: ViewModel
