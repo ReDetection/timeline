@@ -26,7 +26,8 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
             + "/" + Bundle.main.bundleIdentifier!
         try? FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-        storage = try! SQLiteStorage(filepath: path + "/timeline.sqlite")
+        let sqlite = try! SQLiteStorage(filepath: path + "/timeline.sqlite")
+        storage = FilteredAppsStorage(sqlite, overridenApps: ["com.apple.loginwindow": AppStruct(id: "com.apple.loginwindow", trackingMode: .skip)])
         
         tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: alignInterval)
         tracker.active = true
