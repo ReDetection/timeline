@@ -1,0 +1,7 @@
+This software and it's source code is licensed under the following terms:
+
+1. You cannot sell or make profit from distributing copies of the app or the source code.
+2. You cannot distribute derivatives without distributing source code and changes made.
+3. Derivatives should use original license
+4. You need my permission to put the app into well-known binary distribution hubs like Apple AppStore, Google Play Store, and similar.
+5. Derivatives has to have attribution of the original author and a link to the original code repository.
