@@ -16,7 +16,12 @@ func platformDependentTargets() -> [Target] {
             ]),
     ]
 #else
-    return []
+    return [
+        .executableTarget(
+            name: "Timeline",
+            dependencies: ["TimelineCore", "testing_utils"],
+            path: "linux/")
+    ]
 #endif
 }
 
