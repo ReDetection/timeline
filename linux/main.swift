@@ -41,5 +41,16 @@ let tracker = Tracker(timeDependency: time, storage: storage, snapshotter: apps)
 
 tracker.active = true
 
-sleep(20)
+signal(SIGINT, SIG_IGN) // // Make sure the signal does not terminate the application.
+
+let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
+sigintSrc.setEventHandler {
+    print("Got SIGINT")
+    // ...
+    exit(0)
+}
+sigintSrc.resume()
+
+
+RunLoop.main.run(until: .init(timeIntervalSinceNow: 20.0))
 tracker.persist()
