@@ -35,7 +35,7 @@ extension LinuxApps: AppSnapshot {
     }
 }
 
-let apps = LinuxApps()
+let apps = X11Apps()
 
 let tracker = Tracker(timeDependency: time, storage: storage, snapshotter: apps)
 
@@ -52,5 +52,5 @@ sigintSrc.setEventHandler {
 sigintSrc.resume()
 
 
-RunLoop.main.run(until: .init(timeIntervalSinceNow: 20.0))
+RunLoop.main.run(until: .init(timeIntervalSinceNow: 5.0))
 tracker.persist()

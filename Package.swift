@@ -12,6 +12,7 @@ let package = Package(
     products: [],
     dependencies: [
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", "0.13.3"..<"0.14.0"),
+        .package(url: "https://github.com/aestesis/X11.git", branch: "master"),
     ],
     targets: [
         .target(
@@ -53,7 +54,7 @@ package.targets += [.executableTarget(
 package.products.append(.executable(name: "Timeline", targets: ["Timeline"]))
 package.targets.append(.executableTarget(
     name: "Timeline",
-    dependencies: ["TimelineCore", "testing_utils"],
+    dependencies: ["TimelineCore", "testing_utils", "X11"],
     path: "linux/")
 )
 #endif

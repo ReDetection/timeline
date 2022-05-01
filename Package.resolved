@@ -8,6 +8,15 @@
         "revision" : "4d543d811ee644fa4cc4bfa0be996b4dd6ba0f54",
         "version" : "0.13.3"
       }
+    },
+    {
+      "identity" : "x11",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aestesis/X11.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "82d107337341081ab056729e25da97c6c08b58a6"
+      }
     }
   ],
   "version" : 2
