@@ -1,4 +1,5 @@
 import X11
+import Foundation
 import TimelineCore
 
 class X11Apps: Snapshotter {
@@ -34,10 +35,13 @@ extension X11Apps: AppSnapshot {
         returnCode = XGetWindowProperty(display, window, pidAtom, offset, length, 0, 0, &actual_type, &actual_format, &actual_32_length, &bytes_remaining, &bytes_ref)
         print("windowPropertyReturn: \(returnCode), type: \(actual_type), length: \(actual_32_length), remaining: \(bytes_remaining)")
         guard let ref = bytes_ref else { return "{ no active pid}" }
+        defer {
+            bytes_ref?.deallocate()
+        }
         let refAny = UnsafeMutableRawPointer(ref)
         let pid = refAny.load(as: Int32.self)
-        guard let cmdline = try? String(contentsOfFile: "/proc/\(pid)/cmdline") else { return "{no cmdline}" }
-        return cmdline.hasSuffix("\0") ? String(cmdline.dropLast()) : cmdline
+        let url = URL(fileURLWithPath: "/proc/\(pid)/exe").resolvingSymlinksInPath()
+        return url.path
     }
     
     var appName: String {
