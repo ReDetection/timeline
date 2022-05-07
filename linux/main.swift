@@ -14,30 +14,8 @@ let time = LinuxTime()
 let storage = MemoryStorage()
 storage.logStores = true
 
-class LinuxApps: Snapshotter {
-    var currentApp: AppSnapshot {
-        return self
-    }
-    var notifyChange: () -> () = {}
-}
+let tracker = Tracker(timeDependency: time, storage: storage, snapshotter: try! X11Apps())
 
-extension LinuxApps: AppSnapshot {
-    var appId: String {
-        return "Ok"
-    }
-    
-    var appName: String {
-        return "Ok"
-    }
-    
-    var windowTitle: String {
-        return "title"
-    }
-}
-
-let apps = X11Apps()
-
-let tracker = Tracker(timeDependency: time, storage: storage, snapshotter: apps)
 
 tracker.active = true
 
@@ -47,6 +25,7 @@ let sigintSrc = DispatchSource.makeSignalSource(signal: SIGINT, queue: .main)
 sigintSrc.setEventHandler {
     print("Got SIGINT")
     // ...
+    tracker.persist()
     exit(0)
 }
 sigintSrc.resume()
