@@ -31,18 +31,14 @@ class X11Apps: Snapshotter {
         XCloseDisplay(display)
     }
     
-    var currentApp: AppSnapshot {
-        return self
-    }
     var notifyChange: () -> () = {}
-}
-
-extension X11Apps: AppSnapshot {
-    var appId: String {
+    var currentApp: AppSnapshot {
         var window: Window = 0
         var param: Int32 = 0
         XGetInputFocus(display, &window, &param)
-        guard window != 0 else { return "{no focused window information}" }
+        guard window != 0 else { return SnapshotStruct(text: "{no focused window information}") }
+        
+        //todo nice reading of any property
         let offset = 0
         let length = 2
         var actual_type: Atom = 0
@@ -51,25 +47,23 @@ extension X11Apps: AppSnapshot {
         var bytes_remaining: UInt = 0
         var bytes_ref: UnsafeMutablePointer<UInt8>?
         XGetWindowProperty(display, window, pidAtom, offset, length, 0, 0, &actual_type, &actual_format, &actual_32_length, &bytes_remaining, &bytes_ref)
-        guard let ref = bytes_ref else { return "{ no active pid}" }
+        guard let ref = bytes_ref else { return SnapshotStruct(text: "{no active pid}") }
         defer {
             bytes_ref?.deallocate()
         }
         let refAny = UnsafeMutableRawPointer(ref)
         let pid = refAny.load(as: Int32.self)
         let url = URL(fileURLWithPath: "/proc/\(pid)/exe").resolvingSymlinksInPath()
-        return url.path
-    }
-    
-    var appName: String {
-        return "Ok"
-    }
-    
-    var windowTitle: String {
-        return "title"
+        return SnapshotStruct(appId: url.path, appName: url.lastPathComponent, windowTitle: "{todo}")
     }
 }
 
 enum X11Error: Error {
     case noDisplay
+}
+
+extension SnapshotStruct {
+    init(text: String) {
+        self.init(appId: text, appName: text, windowTitle: text)
+    }
 }

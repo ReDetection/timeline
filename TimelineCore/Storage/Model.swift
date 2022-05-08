@@ -74,3 +74,15 @@ extension LogStruct: Codable {}
 extension AppStruct: Codable {}
 extension TrackingMode: Codable {}
 extension TimelineStruct: Codable {}
+
+public struct SnapshotStruct: AppSnapshot {
+    public let appId: String
+    public let appName: String
+    public let windowTitle: String
+    
+    public init(appId: String, appName: String, windowTitle: String) {
+        self.appId = appId
+        self.appName = appName
+        self.windowTitle = windowTitle
+    }
+}

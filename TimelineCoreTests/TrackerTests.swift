@@ -65,11 +65,7 @@ class AppsMock: Snapshotter {
     var notifyChange: () -> () = {}
 }
 
-struct SnapshotMock: AppSnapshot {
-    var appId: String
-    var appName: String
-    var windowTitle: String
-}
+typealias SnapshotMock = SnapshotStruct
 
 class TimeMock: TimeDependency {
     func advance(by interval: TimeInterval) {
