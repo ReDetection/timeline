@@ -54,7 +54,7 @@ package.targets += [.executableTarget(
 package.products.append(.executable(name: "Timeline", targets: ["Timeline"]))
 package.targets.append(.executableTarget(
     name: "Timeline",
-    dependencies: ["TimelineCore", "testing_utils", "X11"],
+    dependencies: ["TimelineCore", "SQLiteStorage", "X11"],
     path: "linux/")
 )
 #endif
