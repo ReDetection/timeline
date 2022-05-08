@@ -5,29 +5,20 @@ import TimelineCore
 class X11Apps: Snapshotter {
     private let display: UnsafeMutablePointer<Display>
     private let pidAtom: Atom
-    private var timer: Timer?
+    private let monitorQueue = OperationQueue()
     
     init() throws {
         guard let d = XOpenDisplay(nil) else { throw X11Error.noDisplay }
         display = d
         pidAtom = XInternAtom(display, "_NET_WM_PID".cString(using: .utf8), 1)
-        let rootWindow: Window = XDefaultRootWindow(display)
-        
-        XSelectInput(display, rootWindow, FocusChangeMask)
-        let timer = Timer(timeInterval: 3, repeats: true) { [weak self] _ in
-            let event = UnsafeMutablePointer<XEvent>.allocate(capacity: 1)
-            repeat {
-                event.pointee.xfocus.display = nil
-                let result = XCheckTypedEvent(d, FocusIn, event)
-                guard result != 0, event.pointee.xfocus.display != nil else { break }
-                self?.notifyChange()
-            } while true
+        let monitorOperation = X11MonitorOperation() { [weak self] in
+            self?.notifyChange()
         }
-        RunLoop.current.add(timer, forMode: .default)
-        self.timer = timer
+        monitorQueue.addOperation(monitorOperation)
     }
     
     deinit {
+        monitorQueue.cancelAllOperations()
         XCloseDisplay(display)
     }
     
@@ -66,4 +57,47 @@ extension SnapshotStruct {
     init(text: String) {
         self.init(appId: text, appName: text, windowTitle: text)
     }
+}
+
+class X11MonitorOperation: Operation {
+    let notifyChange: ()->()
+    
+    init(closure: @escaping ()->()) {
+        self.notifyChange = closure
+    }
+    
+    override func main() {
+        var stderr = FileHandle.standardError
+        let event = UnsafeMutablePointer<XEvent>.allocate(capacity: 1)
+        while true {
+            guard !isCancelled else { return }
+            guard let display = XOpenDisplay(nil) else {
+                print("Found no X display. Retry in 3 sec", to: &stderr)
+                sleep(3)
+                continue
+            }
+            defer {
+                XCloseDisplay(display)
+            }
+            let rootWindow: Window = XDefaultRootWindow(display)
+            XSelectInput(display, rootWindow, SubstructureNotifyMask)
+            while true {
+                event.pointee.xfocus.display = nil
+                XNextEvent(display, event)
+//                print("event type: \(event.pointee.type)")
+                guard !isCancelled else { return }
+                if event.pointee.type != ClientMessage {
+                    self.notifyChange()
+                }
+            }
+        }
+    }
+    
+}
+
+extension FileHandle: TextOutputStream {
+  public func write(_ string: String) {
+    let data = Data(string.utf8)
+    self.write(data)
+  }
 }
