@@ -9,7 +9,10 @@ let package = Package(
     platforms: [
         .macOS(.v12)
     ],
-    products: [],
+    products: [
+        .executable(name: "Timeline-macOS", targets: ["TimelineCocoa"]),
+        .executable(name: "Timeline-linux", targets: ["TimelineLinux"]),
+    ],
     dependencies: [
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", "0.13.3"..<"0.14.0"),
         .package(url: "https://github.com/aestesis/X11.git", branch: "master"),
@@ -34,28 +37,17 @@ let package = Package(
             name: "TimelineCoreTests",
             dependencies: ["TimelineCore", "testing_utils"],
             path: "TimelineCoreTests/"),
+        .executableTarget(
+            name: "TimelineCocoa",
+            dependencies: ["TimelineCore", "SQLiteStorage"],
+            path: "macOS/",
+            resources: [
+                .copy("macOS/macOS.entitlements"),
+                .copy("macOS/timeline--macOS--Info.plist"),
+            ]),
+        .executableTarget(
+            name: "TimelineLinux",
+            dependencies: ["TimelineCore", "SQLiteStorage", "X11"],
+            path: "linux/"),
     ]
 )
-
-#if os(macOS)
-// only brave use this, as SPM does not support macOS apps. Use xcodeproj instead
-package.products += [.executable(name: "Timeline", targets: ["TimelineCocoa"])]
-package.targets += [.executableTarget(
-    name: "TimelineCocoa",
-    dependencies: ["TimelineCore", "SQLiteStorage"],
-    path: "macOS/",
-    resources: [
-        .copy("macOS/macOS.entitlements"),
-        .copy("macOS/timeline--macOS--Info.plist"),
-    ]),
-]
-
-#elseif os(Linux)
-package.products.append(.executable(name: "Timeline", targets: ["Timeline"]))
-package.targets.append(.executableTarget(
-    name: "Timeline",
-    dependencies: ["TimelineCore", "SQLiteStorage", "X11"],
-    path: "linux/")
-)
-#endif
-
