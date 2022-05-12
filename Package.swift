@@ -16,6 +16,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", "0.13.3"..<"0.14.0"),
         .package(url: "https://github.com/aestesis/X11.git", branch: "master"),
+        .package(url: "https://github.com/VertexUI/VertexGUI", branch: "master"),
     ],
     targets: [
         .target(
@@ -47,7 +48,7 @@ let package = Package(
             ]),
         .executableTarget(
             name: "TimelineLinux",
-            dependencies: ["TimelineCore", "SQLiteStorage", "X11"],
+            dependencies: ["TimelineCore", "SQLiteStorage", "X11", "VertexGUI"],
             path: "linux/"),
     ]
 )

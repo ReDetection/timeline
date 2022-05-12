@@ -1,6 +1,6 @@
 import Foundation
 
-extension Date {
+public extension Date {
     
     var dateBegin: Date {
         let calendar = Calendar.current

@@ -1,6 +1,7 @@
 import Foundation
 import TimelineCore
 import SQLiteStorage
+import VertexGUI
 
 class LinuxTime: TimeDependency {
     var currentTime: Date {
@@ -36,6 +37,12 @@ sigintSrc.setEventHandler {
 }
 sigintSrc.resume()
 
+let app = try VertexGUI.Application()
+try! app.createWindow(widgetRoot: Root(rootWidget: MainView()))
 
-RunLoop.main.run(until: .distantFuture)
+do {
+  try app.start()
+} catch {
+  print("an error occurred while running the app:", error)
+}
 tracker.persist()
