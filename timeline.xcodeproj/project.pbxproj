@@ -34,9 +34,9 @@
 		3671378427DC97FF00BDE117 /* TimelineCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3671377127DC97FF00BDE117 /* TimelineCore.framework */; };
 		3671378527DC97FF00BDE117 /* TimelineCore.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3671377127DC97FF00BDE117 /* TimelineCore.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		3676774F27DF6098008AE4F8 /* PureCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3676774E27DF6098008AE4F8 /* PureCounter.swift */; };
+		368EE762282EC73F0006100A /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 368EE760282EC73F0006100A /* Date+Extensions.swift */; };
 		36EFD83828083EF800C098F9 /* SQLite in Frameworks */ = {isa = PBXBuildFile; productRef = 36EFD83728083EF800C098F9 /* SQLite */; };
 		36F29EB1280B2AD0001AE598 /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F29EAF280B29F3001AE598 /* StatisticsView.swift */; };
-		36F29EB2280B2ADA001AE598 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36F29EB0280B29FA001AE598 /* Date+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -133,8 +133,8 @@
 		3671377827DC97FF00BDE117 /* TimelineCoreTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TimelineCoreTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		3671377F27DC97FF00BDE117 /* CounterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CounterTests.swift; sourceTree = "<group>"; };
 		3676774E27DF6098008AE4F8 /* PureCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PureCounter.swift; sourceTree = "<group>"; };
+		368EE760282EC73F0006100A /* Date+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 		36F29EAF280B29F3001AE598 /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
-		36F29EB0280B29FA001AE598 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -263,7 +263,6 @@
 				36F29EAF280B29F3001AE598 /* StatisticsView.swift */,
 				3659515C27F9698700A608BA /* CocoaTime.swift */,
 				3659515E27F9870700A608BA /* CocoaApps.swift */,
-				36F29EB0280B29FA001AE598 /* Date+Extensions.swift */,
 				3671373F27DC872000BDE117 /* macOS.entitlements */,
 				3659512127F9523F00A608BA /* timeline--macOS--Info.plist */,
 			);
@@ -273,6 +272,7 @@
 		3671377227DC97FF00BDE117 /* TimelineCore */ = {
 			isa = PBXGroup;
 			children = (
+				368EE75E282EC73F0006100A /* Shared */,
 				365D0E6727EF708500774736 /* Logic */,
 				3629E83C27EF5075001A6823 /* Storage */,
 				3671377327DC97FF00BDE117 /* TimelineCore.h */,
@@ -287,6 +287,14 @@
 				3659511C27F80A5600A608BA /* TrackerTests.swift */,
 			);
 			path = TimelineCoreTests;
+			sourceTree = "<group>";
+		};
+		368EE75E282EC73F0006100A /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				368EE760282EC73F0006100A /* Date+Extensions.swift */,
+			);
+			path = Shared;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -540,7 +548,6 @@
 				3659515F27F9870700A608BA /* CocoaApps.swift in Sources */,
 				36404C1727F9D6AC0071D495 /* AppDelegate.swift in Sources */,
 				3659515A27F9555500A608BA /* main.swift in Sources */,
-				36F29EB2280B2ADA001AE598 /* Date+Extensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -549,6 +556,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				365D0E6927EF8FA700774736 /* Tracker.swift in Sources */,
+				368EE762282EC73F0006100A /* Date+Extensions.swift in Sources */,
 				365D0E6B27F0519E00774736 /* Storage.swift in Sources */,
 				3676774F27DF6098008AE4F8 /* PureCounter.swift in Sources */,
 				3659511B27F7E61700A608BA /* PureAlignedTimer.swift in Sources */,
