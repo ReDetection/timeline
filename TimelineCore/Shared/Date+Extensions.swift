@@ -14,7 +14,7 @@ public extension Date {
     }
     
     func dateByAddingDays(_ days: Int) -> Date {
-        return Calendar.current.date(byAdding: .day, value: 1, to: self)!
+        return Calendar.current.date(byAdding: .day, value: days, to: self)!
     }
     
     var nextDay: Date {
