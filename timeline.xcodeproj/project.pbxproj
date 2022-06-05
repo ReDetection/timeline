@@ -10,7 +10,7 @@
 		360A43722808782B0088B091 /* TimelineCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3671377127DC97FF00BDE117 /* TimelineCore.framework */; };
 		360A43752808783C0088B091 /* TimelineCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3671377127DC97FF00BDE117 /* TimelineCore.framework */; };
 		361885CD28158F76007F92DF /* FilteredAppsStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 361885CC28158F76007F92DF /* FilteredAppsStorage.swift */; };
-		3622BD2528412C3400293DD4 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3622BD2428412C3400293DD4 /* ViewModel.swift */; };
+		3622BD2528412C3400293DD4 /* ViewLogic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3622BD2428412C3400293DD4 /* ViewLogic.swift */; };
 		3629E83E27EF5093001A6823 /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3629E83D27EF5093001A6823 /* Model.swift */; };
 		36404C1727F9D6AC0071D495 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3659511E27F9479E00A608BA /* AppDelegate.swift */; };
 		365574DC2808029F00076EB8 /* SQLiteStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 365574DB2808029F00076EB8 /* SQLiteStorage.swift */; };
@@ -111,7 +111,7 @@
 /* Begin PBXFileReference section */
 		360A437628087CCF0088B091 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		361885CC28158F76007F92DF /* FilteredAppsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilteredAppsStorage.swift; sourceTree = "<group>"; };
-		3622BD2428412C3400293DD4 /* ViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModel.swift; sourceTree = "<group>"; };
+		3622BD2428412C3400293DD4 /* ViewLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewLogic.swift; sourceTree = "<group>"; };
 		3629E83D27EF5093001A6823 /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
 		365574DB2808029F00076EB8 /* SQLiteStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SQLiteStorage.swift; sourceTree = "<group>"; };
 		3659511A27F7E61700A608BA /* PureAlignedTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PureAlignedTimer.swift; sourceTree = "<group>"; };
@@ -295,7 +295,7 @@
 			isa = PBXGroup;
 			children = (
 				368EE760282EC73F0006100A /* Date+Extensions.swift */,
-				3622BD2428412C3400293DD4 /* ViewModel.swift */,
+				3622BD2428412C3400293DD4 /* ViewLogic.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -564,7 +564,7 @@
 				3676774F27DF6098008AE4F8 /* PureCounter.swift in Sources */,
 				3659511B27F7E61700A608BA /* PureAlignedTimer.swift in Sources */,
 				361885CD28158F76007F92DF /* FilteredAppsStorage.swift in Sources */,
-				3622BD2528412C3400293DD4 /* ViewModel.swift in Sources */,
+				3622BD2528412C3400293DD4 /* ViewLogic.swift in Sources */,
 				3629E83E27EF5093001A6823 /* Model.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

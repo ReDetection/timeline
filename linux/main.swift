@@ -38,7 +38,7 @@ sigintSrc.setEventHandler {
 sigintSrc.resume()
 
 let app = try VertexGUI.Application()
-try! app.createWindow(widgetRoot: Root(rootWidget: MainView()))
+try! app.createWindow(widgetRoot: Root(rootWidget: MainView(storage: storage)))
 
 do {
   try app.start()

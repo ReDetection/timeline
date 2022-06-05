@@ -1,5 +1,6 @@
 import VertexGUI
 import Foundation
+import TimelineCore
 
 let dateFormatter: DateFormatter = { 
     let result = DateFormatter()
@@ -9,23 +10,25 @@ let dateFormatter: DateFormatter = {
 }()
 
 public class MainView: ComposedWidget {
-  @State
-  private var counter = 0
+  let storage: Storage
 
-  @State 
+  @State
   private var date = Date()
+
+  @State
+  private var logs: [Log] = []
 
   @Compose override public var content: ComposedContent {
     Container().with(classes: ["vstack"]).withContent { [unowned self] in
         Container().with(classes: ["container"]).withContent { [unowned self] in
             Button().onClick {
-                self.date = self.date.dateByAddingDays(-1)
+                self.load(date: self.date.dateByAddingDays(-1))
             }.withContent {
                 Text("Previous")
             }
             Text(ImmutableBinding($date.immutable, get: { dateFormatter.string(from: $0) } ))
             Button().onClick {
-                self.date = self.date.nextDay
+                self.load(date: self.date.nextDay)
             }.withContent {
                 Text("Next")
             }
@@ -34,9 +37,27 @@ public class MainView: ComposedWidget {
             Text("next line")
         }
         Container().with(classes: ["container"]).withContent { [unowned self] in
-            Text("another one")
+            List(items: ImmutableBinding($logs.immutable, get: { $0.totals })).withContent({
+                $0.itemSlot { (itemData: AppTotal) in
+                  Container().with(classes: ["container", "listPadding"]).withContent {
+                    Text(itemData.activity)
+                    Text("\(itemData.duration)s")
+                  }
+                }
+            })
         }
     }
+  }
+
+  init(storage: Storage) {
+    self.storage = storage
+    super.init()
+    self.load(date: Date())
+  }
+
+  func load(date: Date) {
+    self.date = date
+    self.logs = storage.fetchLogs(since: date.dateBegin, till: date.nextDay.dateBegin)
   }
 
   // this is basically copied from demo. Hopefully I will find a way to look native
@@ -62,6 +83,10 @@ public class MainView: ComposedWidget {
         (\.$direction, .row)
         (\.$alignContent, .stretch)
         (\.$justifyContent, .center)
+      }
+
+      Style(".listPadding", Container.self) {
+        (\.$padding, Insets(all: 8))
       }
 
       Style("Button") {
