@@ -39,9 +39,9 @@ public class MainView: ComposedWidget {
         Container().with(classes: ["container"]).withContent { [unowned self] in
             List(items: ImmutableBinding($logs.immutable, get: { $0.totals })).withContent({
                 $0.itemSlot { (itemData: AppTotal) in
-                  Container().with(classes: ["container", "listPadding"]).withContent {
+                  Container().with(classes: ["hstack", "listPadding"]).withContent {
                     Text(itemData.activity)
-                    Text("\(itemData.duration)s")
+                    Text(itemData.duration.readableDuration)
                   }
                 }
             })
@@ -105,5 +105,24 @@ public class MainView: ComposedWidget {
         }
       }
     }
+  }
+}
+
+extension TimeInterval {
+  var readableDuration: String {
+    var result: [String] = []
+    var seconds: Int = Int(self)
+    if seconds > 3600 {
+      result.append("\(seconds / 3600)h")
+      seconds %= 3600
+    }
+    if seconds > 60 {
+      result.append("\(seconds / 60)m")
+      seconds %= 60
+    }
+    if seconds > 0, result.count < 2 {
+      result.append("\(seconds)s")
+    }
+    return result.joined(separator: " ")
   }
 }
