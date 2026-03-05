@@ -59,7 +59,7 @@ extension SnapshotStruct {
     }
 }
 
-class X11MonitorOperation: Operation {
+class X11MonitorOperation: Operation, @unchecked Sendable {
     let notifyChange: ()->()
     
     init(closure: @escaping ()->()) {

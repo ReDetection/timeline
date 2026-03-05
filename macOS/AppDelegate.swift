@@ -9,6 +9,7 @@ private let alignInterval: TimeInterval = 5*60
 
 class AppDelegate: NSObject, NSApplicationDelegate {
     let statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
+    let alerter = CocoaAlerter()
     var tracker: Tracker!
     var storage: Storage!
     var currentAppItem: NSMenuItem!
@@ -25,11 +26,16 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         
         let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first!
             + "/" + Bundle.main.bundleIdentifier!
-        try? FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
-        let sqlite = try! SQLiteStorage(filepath: path + "/timeline.sqlite")
-        storage = FilteredAppsStorage(sqlite, overridenApps: ["com.apple.loginwindow": AppStruct(id: "com.apple.loginwindow", trackingMode: .skip)])
+        do {
+            try FileManager.default.createDirectory(atPath: path, withIntermediateDirectories: true, attributes: nil)
+            let sqlite = try SQLiteStorage(filepath: path + "/timeline.sqlite")
+            storage = FilteredAppsStorage(sqlite, overridenApps: ["com.apple.loginwindow": AppStruct(id: "com.apple.loginwindow", trackingMode: .skip)])
+        } catch {
+            alerter.showAlert(title: "Timeline storage unavailable", message: error.localizedDescription)
+            storage = MemoryStorage()
+        }
         
-        tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alignInterval: alignInterval)
+        tracker = Tracker(timeDependency: CocoaTime(), storage: storage, snapshotter: CocoaApps(), alerter: alerter, alignInterval: alignInterval)
         tracker.active = true
 
         createMenu()
@@ -89,7 +95,11 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @objc func setAppTracking(_ source: NSMenuItem) {
         let newTracking = [skipTrackingItem: TrackingMode.skip, setAppTrackingItem: .app, setTitleTrackingItem: .titles][source] ?? .app
         let newApp = AppStruct(id: appProvider.currentApp.appId, trackingMode: newTracking)
-        storage.store(app: newApp)
+        do {
+            try storage.store(app: newApp)
+        } catch {
+            alerter.showAlert(title: "Error storing app", message: error.localizedDescription)
+        }
         updateCurrentApp()
         tracker.persist()
     }

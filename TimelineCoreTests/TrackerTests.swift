@@ -13,7 +13,7 @@ class TrackerTests: XCTestCase {
     let apps = AppsMock()
     
     func testFlow() {
-        let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alignInterval: 10)
+        let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alerter: NoopAlerter(), alignInterval: 10)
         tracker.currentTimelineId = "ABC"
         tracker.active = true
         timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 9)
@@ -46,7 +46,7 @@ class TrackerTests: XCTestCase {
     }
     
     func testSimplestTrack() {
-        let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alignInterval: 2)
+        let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alerter: NoopAlerter(), alignInterval: 2)
         tracker.active = true
         timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 2)
         delay(2.5)
@@ -73,4 +73,8 @@ class TimeMock: TimeDependency {
     }
     var currentTime: Date = Date(timeIntervalSinceReferenceDate: 0)
     var notifySignificantTimeChange: () -> () = {}
+}
+
+class NoopAlerter: Alerter {
+    func showAlert(title: String, message: String) {}
 }

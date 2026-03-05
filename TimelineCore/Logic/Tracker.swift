@@ -21,15 +21,18 @@ public class Tracker {
     private let storage: Storage
     private let time: TimeDependency
     private let snapshotter: Snapshotter
+    private let alerter: Alerter
     private let timer: AlignedTimer
     private let alignInterval: TimeInterval
+    private var lastAlertText: String?
     public var currentTimelineId: String = UUID().uuidString
     public var fillTimelineDeviceInfo: (inout TimelineStruct)->() = { _ in }
     
-    public init(timeDependency: TimeDependency, storage: Storage, snapshotter: Snapshotter, alignInterval: TimeInterval = 5*60) {
+    public init(timeDependency: TimeDependency, storage: Storage, snapshotter: Snapshotter, alerter: Alerter, alignInterval: TimeInterval = 5*60) {
         self.storage = storage
         self.time = timeDependency
         self.snapshotter = snapshotter
+        self.alerter = alerter
         self.counter = Counter(timeDependency: {
             return timeDependency.currentTime
         })
@@ -77,7 +80,12 @@ public class Tracker {
     
     private func store(app: AppSnapshot) -> App {
         let app = AppStruct(id: app.appId, trackingMode: .app)
-        storage.store(app: app)
+        do {
+            try storage.store(app: app)
+            lastAlertText = nil
+        } catch {
+            reportStorageError(error, action: "storing app")
+        }
         return app
     }
     
@@ -89,13 +97,33 @@ public class Tracker {
         if storage.fetchTimeline(id: currentTimelineId) == nil {
             var timeline = TimelineStruct(id: currentTimelineId, dateStart: time.currentTime)
             fillTimelineDeviceInfo(&timeline)
-            storage.store(timeline: timeline)
+            do {
+                try storage.store(timeline: timeline)
+                lastAlertText = nil
+            } catch {
+                reportStorageError(error, action: "storing timeline")
+                if isDiskFull(error) {
+                    counter.clearAndPause()
+                    if active {
+                        tickAppCounter()
+                    }
+                    return
+                }
+            }
         }
         for (appKey, duration) in counter.statistics {
             log.appId = appKey.appId
             log.activityName = appKey.activity
             log.duration = duration
-            storage.store(log: log)
+            do {
+                try storage.store(log: log)
+                lastAlertText = nil
+            } catch {
+                reportStorageError(error, action: "storing log")
+                if isDiskFull(error) {
+                    break
+                }
+            }
         }
         counter.clearAndPause()
         if active {
@@ -106,6 +134,35 @@ public class Tracker {
     private func refreshTimeline() {
         print("Significant time change!")
         //TODO: IMPLEMENT
+    }
+    
+    private func isDiskFull(_ error: Error) -> Bool {
+        guard let storageError = error as? StorageError else {
+            return false
+        }
+        if case .diskFull = storageError {
+            return true
+        }
+        return false
+    }
+    
+    private func reportStorageError(_ error: Error, action: String) {
+        let title: String
+        let message: String
+        if isDiskFull(error) {
+            title = "Timeline paused: disk is full"
+            message = "No space left on disk. Free up space, then Timeline will resume saving data."
+        } else {
+            title = "Timeline storage error"
+            message = "Failed while \(action): \(error.localizedDescription)"
+        }
+        let text = title + "|" + message
+        guard text != lastAlertText else {
+            return
+        }
+        lastAlertText = text
+        fputs("[timeline] \(title): \(message)\n", stderr)
+        alerter.showAlert(title: title, message: message)
     }
     
 }
