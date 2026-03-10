@@ -12,6 +12,8 @@ let package = Package(
     products: [
         .executable(name: "Timeline-macOS", targets: ["TimelineCocoa"]),
         .executable(name: "Timeline-linux", targets: ["TimelineLinux"]),
+        .library(name: "TimelineCore", targets: ["TimelineCore"]),
+        .library(name: "SQLiteStorage", targets: ["SQLiteStorage"]),
     ],
     dependencies: [
         .package(url: "https://github.com/stephencelis/SQLite.swift.git", "0.13.3"..<"0.14.0"),

@@ -1,4 +1,5 @@
 {
+  "originHash" : "16ac6c9d2e746be19b9c4bd833f1da5eed775f259d2f9bca1f448d4ee0510a1e",
   "pins" : [
     {
       "identity" : "sqlite.swift",
@@ -8,7 +9,16 @@
         "revision" : "4d543d811ee644fa4cc4bfa0be996b4dd6ba0f54",
         "version" : "0.13.3"
       }
+    },
+    {
+      "identity" : "x11",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/aestesis/X11.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "82d107337341081ab056729e25da97c6c08b58a6"
+      }
     }
   ],
-  "version" : 2
+  "version" : 3
 }
