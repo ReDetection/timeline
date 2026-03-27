@@ -1,6 +1,6 @@
 import Foundation
 import SQLite
-import CSQLite
+import SQLite3
 import TimelineCore
 
 public class SQLiteStorage: Storage {
