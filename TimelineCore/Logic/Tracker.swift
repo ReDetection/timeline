@@ -102,13 +102,8 @@ public class Tracker {
                 lastAlertText = nil
             } catch {
                 reportStorageError(error, action: "storing timeline")
-                if isDiskFull(error) {
-                    counter.clearAndPause()
-                    if active {
-                        tickAppCounter()
-                    }
-                    return
-                }
+                // logs reference this timeline, no point trying to store them; keep counted time for the next attempt
+                return
             }
         }
         for (appKey, duration) in counter.statistics {
@@ -118,16 +113,14 @@ public class Tracker {
             do {
                 try storage.store(log: log)
                 lastAlertText = nil
+                counter.remove(key: appKey)
             } catch {
                 reportStorageError(error, action: "storing log")
-                if isDiskFull(error) {
-                    break
+                if case StorageError.diskFull = error {
+                    // remaining stores would fail the same way; keep counted time for the next attempt
+                    return
                 }
             }
-        }
-        counter.clearAndPause()
-        if active {
-            tickAppCounter()
         }
     }
     
@@ -136,21 +129,11 @@ public class Tracker {
         //TODO: IMPLEMENT
     }
     
-    private func isDiskFull(_ error: Error) -> Bool {
-        guard let storageError = error as? StorageError else {
-            return false
-        }
-        if case .diskFull = storageError {
-            return true
-        }
-        return false
-    }
-    
     private func reportStorageError(_ error: Error, action: String) {
         let title: String
         let message: String
-        if isDiskFull(error) {
-            title = "Timeline paused: disk is full"
+        if case StorageError.diskFull = error {
+            title = "Timeline can't save data: disk is full"
             message = "No space left on disk. Free up space, then Timeline will resume saving data."
         } else {
             title = "Timeline storage error"

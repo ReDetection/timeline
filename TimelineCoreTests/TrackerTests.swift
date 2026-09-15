@@ -45,6 +45,29 @@ class TrackerTests: XCTestCase {
         
     }
     
+    func testDiskFullKeepsCountedTimeForNextPersist() {
+        let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alerter: NoopAlerter(), alignInterval: 10)
+        tracker.currentTimelineId = "ABC"
+        tracker.active = true
+
+        timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 10)
+        storage.storeError = StorageError.diskFull(reason: "test")
+        tracker.persist()
+        XCTAssertEqual(storage.timelines.count, 0)
+        XCTAssertEqual(storage.logs.count, 0)
+
+        storage.storeError = nil
+        timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 20)
+        tracker.persist()
+        XCTAssertEqual(storage.timelines.map { $0.id }, ["ABC"])
+        XCTAssertEqual(storage.logs.map { $0.appId }, ["com.demo.Folders"])
+        XCTAssertEqual(storage.logs.map { $0.duration }, [20], "time counted while the disk was full should be persisted, not dropped")
+
+        timeTravel.currentTime = Date(timeIntervalSinceReferenceDate: 30)
+        tracker.persist()
+        XCTAssertEqual(storage.logs.map { $0.duration }, [20, 10], "already persisted time should not be stored again")
+    }
+
     func testSimplestTrack() {
         let tracker = Tracker(timeDependency: timeTravel, storage: storage, snapshotter: apps, alerter: NoopAlerter(), alignInterval: 2)
         tracker.active = true

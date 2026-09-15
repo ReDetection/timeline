@@ -6,10 +6,14 @@ public class MemoryStorage: Storage {
     public var logs: [Log] = []
     public var timelines: [Timeline] = []
     public var logStores = false
-    
+    public var storeError: Error?
+
     public init() {}
-    
+
     public func store(log newLog: Log) throws {
+        if let error = storeError {
+            throw error
+        }
         var log = newLog
         if let existingIndex = logs.firstIndex(where: { $0.appId == log.appId && $0.timelineId == log.timelineId && $0.timeslotStart == log.timeslotStart && $0.activityName == log.activityName }) {
             let existing = logs[existingIndex]
@@ -23,6 +27,9 @@ public class MemoryStorage: Storage {
     }
     
     public func store(app: App) throws {
+        if let error = storeError {
+            throw error
+        }
         if let existingIndex = apps.firstIndex(where: { $0.id == app.id }) {
             apps.remove(at: existingIndex)
         }
@@ -33,6 +40,9 @@ public class MemoryStorage: Storage {
     }
     
     public func store(timeline: Timeline) throws {
+        if let error = storeError {
+            throw error
+        }
         if let existingIndex = timelines.firstIndex(where: { $0.id == timeline.id }) {
             timelines.remove(at: existingIndex)
         }

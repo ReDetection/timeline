@@ -43,13 +43,12 @@ public class Counter<Key: Hashable> {
         }
     }
     
-    public func clearAndPause() {
+    public func remove(key: Key) {
         queue.sync {
-            self.stats = [:]
-            self.active = .off
+            stats[key] = nil
         }
     }
-    
+
     enum Status {
         case active(key: Key)
         case off

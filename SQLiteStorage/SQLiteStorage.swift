@@ -1,6 +1,10 @@
 import Foundation
 import SQLite
+#if os(Linux)
 import CSQLite
+#else
+import SQLite3
+#endif
 import TimelineCore
 
 public class SQLiteStorage: Storage {
