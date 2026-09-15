@@ -3,7 +3,11 @@
 
 import PackageDescription
 
-var products: [Product] = []
+var products: [Product] = [
+    .library(name: "TimelineCore", targets: ["TimelineCore"]),
+    .library(name: "SQLiteStorage", targets: ["SQLiteStorage"]),
+    .library(name: "testing_utils", targets: ["testing_utils"]),
+]
 var targets: [Target] = [
     .target(
         name: "TimelineCore",
@@ -49,7 +53,7 @@ products.append(.executable(name: "Timeline-macOS", targets: ["TimelineCocoa"]))
 targets.append(
     .executableTarget(
         name: "TimelineCocoa",
-        dependencies: ["TimelineCore", "SQLiteStorage"],
+        dependencies: ["TimelineCore", "SQLiteStorage", "testing_utils"],
         path: "macOS/",
         sources: [
             "AppDelegate.swift",
