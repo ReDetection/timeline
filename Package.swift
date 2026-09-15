@@ -12,6 +12,9 @@ let package = Package(
     products: [
         .executable(name: "Timeline-macOS", targets: ["TimelineCocoa"]),
         .executable(name: "Timeline-linux", targets: ["TimelineLinux"]),
+        .library(name: "TimelineCore", targets: ["TimelineCore"]),
+        .library(name: "SQLiteStorage", targets: ["SQLiteStorage"]),
+        .library(name: "testing_utils", targets: ["testing_utils"]),
     ],
     dependencies: [
         .package(url: "https://github.com/stephencelis/CSQLite.git", from: "0.0.3"),
@@ -41,7 +44,7 @@ let package = Package(
             path: "TimelineCoreTests/"),
         .executableTarget(
             name: "TimelineCocoa",
-            dependencies: ["TimelineCore", "SQLiteStorage"],
+            dependencies: ["TimelineCore", "SQLiteStorage", "testing_utils"],
             path: "macOS/",
             resources: [
                 .copy("macOS.entitlements"),
