@@ -9,16 +9,16 @@ public class FilteredAppsStorage: Storage {
         self.innerStorage = storage
     }
     
-    public func store(log: Log) {
-        innerStorage.store(log: log)
+    public func store(log: Log) throws {
+        try innerStorage.store(log: log)
     }
     
-    public func store(app: App) {
-        innerStorage.store(app: app)
+    public func store(app: App) throws {
+        try innerStorage.store(app: app)
     }
     
-    public func store(timeline: Timeline) {
-        innerStorage.store(timeline: timeline)
+    public func store(timeline: Timeline) throws {
+        try innerStorage.store(timeline: timeline)
     }
     
     public func fetchLogs(since: Date, till: Date) -> [Log] {

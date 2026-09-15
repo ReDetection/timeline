@@ -1,5 +1,10 @@
 import Foundation
 import SQLite
+#if os(Linux)
+import CSQLite
+#else
+import SQLite3
+#endif
 import TimelineCore
 
 public class SQLiteStorage: Storage {
@@ -22,79 +27,113 @@ public class SQLiteStorage: Storage {
     let appId = Expression<String>("appId")
     let activityName = Expression<String>("activityName")
     let duration = Expression<TimeInterval>("duration")
+    
+    private static func mapStorageError(_ error: Error, operation: String) -> StorageError {
+        if case let Result.error(message, code, _) = error, code == SQLITE_FULL {
+            return .diskFull(reason: message)
+        }
+        let nsError = error as NSError
+        if nsError.domain == NSPOSIXErrorDomain && nsError.code == ENOSPC {
+            return .diskFull(reason: nsError.localizedDescription)
+        }
+        if nsError.domain == NSCocoaErrorDomain && nsError.code == NSFileWriteOutOfSpaceError {
+            return .diskFull(reason: nsError.localizedDescription)
+        }
+        return .cantWrite(reason: "\(operation): \(error.localizedDescription)")
+    }
 
     public init(filepath: String) throws {
-        db = try Connection(filepath)
-        try db.run(appsTable.create(ifNotExists: true) {
-            $0.column(idColumn, primaryKey: true)
-            $0.column(trackingMode)
-        })
-        try db.run(appsTable.createIndex(idColumn, unique: true, ifNotExists: true))
-        try db.run(timelinesTable.create(ifNotExists: true) {
-            $0.column(idColumn, primaryKey: true)
-            $0.column(deviceName)
-            $0.column(deviceSystem)
-            $0.column(timezoneName)
-            $0.column(timezoneShift)
-            $0.column(dateStart)
-        })
-        try db.run(timelinesTable.createIndex(idColumn, unique: true, ifNotExists: true))
-        try db.run(logsTable.create(ifNotExists: true) {
-            $0.column(timelineId)
-            $0.column(timeslotStart)
-            $0.column(appId)
-            $0.column(activityName)
-            $0.column(duration)
-            $0.foreignKey(timelineId, references: timelinesTable, idColumn)
-            $0.foreignKey(appId, references: appsTable, idColumn)
-        })
-        try db.run(logsTable.createIndex(timeslotStart, unique: false, ifNotExists: true))
+        do {
+            db = try Connection(filepath)
+            try db.run(appsTable.create(ifNotExists: true) {
+                $0.column(idColumn, primaryKey: true)
+                $0.column(trackingMode)
+            })
+            try db.run(appsTable.createIndex(idColumn, unique: true, ifNotExists: true))
+            try db.run(timelinesTable.create(ifNotExists: true) {
+                $0.column(idColumn, primaryKey: true)
+                $0.column(deviceName)
+                $0.column(deviceSystem)
+                $0.column(timezoneName)
+                $0.column(timezoneShift)
+                $0.column(dateStart)
+            })
+            try db.run(timelinesTable.createIndex(idColumn, unique: true, ifNotExists: true))
+            try db.run(logsTable.create(ifNotExists: true) {
+                $0.column(timelineId)
+                $0.column(timeslotStart)
+                $0.column(appId)
+                $0.column(activityName)
+                $0.column(duration)
+                $0.foreignKey(timelineId, references: timelinesTable, idColumn)
+                $0.foreignKey(appId, references: appsTable, idColumn)
+            })
+            try db.run(logsTable.createIndex(timeslotStart, unique: false, ifNotExists: true))
+        } catch {
+            let mapped = Self.mapStorageError(error, operation: "open sqlite")
+            if case .diskFull = mapped {
+                throw mapped
+            }
+            throw StorageError.cantOpen(reason: error.localizedDescription)
+        }
     }
     
-    public func store(log: Log) {
-        try! db.run(logsTable.insert(
-            timelineId <- log.timelineId,
-            timeslotStart <- log.timeslotStart,
-            appId <- log.appId,
-            activityName <- log.activityName,
-            duration <- log.duration
-        ))
+    public func store(log: Log) throws {
+        do {
+            try db.run(logsTable.insert(
+                timelineId <- log.timelineId,
+                timeslotStart <- log.timeslotStart,
+                appId <- log.appId,
+                activityName <- log.activityName,
+                duration <- log.duration
+            ))
+        } catch {
+            throw Self.mapStorageError(error, operation: "store log")
+        }
     }
     
-    public func store(app: App) {
-        try! db.run(appsTable.upsert(
-            idColumn <- app.id,
-            trackingMode <- app.trackingMode,
-            onConflictOf: idColumn))
+    public func store(app: App) throws {
+        do {
+            try db.run(appsTable.upsert(
+                idColumn <- app.id,
+                trackingMode <- app.trackingMode,
+                onConflictOf: idColumn))
+        } catch {
+            throw Self.mapStorageError(error, operation: "store app")
+        }
     }
     
-    public func store(timeline: Timeline) {
-        try! db.run(timelinesTable.upsert(
-            idColumn <- timeline.id,
-            deviceName <- timeline.deviceName,
-            deviceSystem <- timeline.deviceSystem,
-            timezoneName <- timeline.timezoneName,
-            timezoneShift <- timeline.timezoneShift,
-            dateStart <- timeline.dateStart,
-            onConflictOf: idColumn))
+    public func store(timeline: Timeline) throws {
+        do {
+            try db.run(timelinesTable.upsert(
+                idColumn <- timeline.id,
+                deviceName <- timeline.deviceName,
+                deviceSystem <- timeline.deviceSystem,
+                timezoneName <- timeline.timezoneName,
+                timezoneShift <- timeline.timezoneShift,
+                dateStart <- timeline.dateStart,
+                onConflictOf: idColumn))
+        } catch {
+            throw Self.mapStorageError(error, operation: "store timeline")
+        }
     }
     
     public func fetchLogs(since: Date, till: Date) -> [Log] {
-        let logs: [LogStruct] = try! db.prepare(logsTable.filter(timeslotStart >= since && timeslotStart < till))
+        let logs: [LogStruct]? = try? db.prepare(logsTable.filter(timeslotStart >= since && timeslotStart < till))
             .map { try $0.decode() }
-        return logs
+        return logs ?? []
     }
     
     public func fetchApps() -> [String : App] {
-        let apps: [AppStruct] = try! db.prepare(appsTable).map { row -> AppStruct in
-            return AppStruct(id: try! row.get(idColumn), trackingMode: try! row.get(trackingMode))
+        let apps: [AppStruct]? = try? db.prepare(appsTable).map { row -> AppStruct in
+            return AppStruct(id: try row.get(idColumn), trackingMode: try row.get(trackingMode))
         }
-        return Dictionary(grouping: apps) { $0.id } .mapValues { $0[0] }
+        return Dictionary(grouping: apps ?? []) { $0.id } .mapValues { $0[0] }
     }
     
     public func fetchTimeline(id: String) -> Timeline? {
-        let timelines: [TimelineStruct] = try! db.prepare(timelinesTable.filter(idColumn == id).limit(1)).map { try $0.decode() }
-        return timelines.first
+        let timelines: [TimelineStruct]? = try? db.prepare(timelinesTable.filter(idColumn == id).limit(1)).map { try $0.decode() }
+        return timelines?.first
     }
 }
 

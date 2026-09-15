@@ -16,7 +16,7 @@ try? FileManager.default.createDirectory(atPath: configPath, withIntermediateDir
 
 var storage: Storage = try! SQLiteStorage(filepath: configPath + "/store.sqlite")
 storage = FilteredAppsStorage(storage, overridenApps: ["{no active pid}": AppStruct(id: "{no active pid}", trackingMode: .skip)])
-let tracker = Tracker(timeDependency: time, storage: storage, snapshotter: try! X11Apps())
+let tracker = Tracker(timeDependency: time, storage: storage, snapshotter: try! X11Apps(), alerter: LinuxAlerter())
 
 let terminalNotifier = try! X11Apps()
 terminalNotifier.notifyChange = { [weak terminalNotifier] in
